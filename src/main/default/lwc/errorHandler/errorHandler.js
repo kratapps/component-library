@@ -1,11 +1,3 @@
-/**
- * Service to handle errors in a generic way.
- *
- * @see     processError
- *
- * @author  kratapps.com
- * @date    2021-11-07
- */
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
 function formatErrorWithBody(formatted, e) {
@@ -57,7 +49,7 @@ function formatError(e) {
         formatErrorWithBody(formatted, e);
     } else {
         // generic handling
-        formatted.title = 'Unexpected Error.';
+        formatted.title = 'Something Went Wrong';
         formatted.message = JSON.stringify(e);
     }
     return formatted;
