@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author  kratapps.com
  */
 public class LightningError {
-    private static final String SOMETHING_WENT_WRONG_MESSAGE = 'Something Went Wrong';
+    private static final String SOMETHING_WENT_WRONG_MESSAGE = 'Something went wrong';
     private List<LightningError.Error> errors = new List<LightningError.Error>();
     private Map<String, List<LightningError.FieldError>> fieldErrors = new Map<String, List<LightningError.FieldError>>();
     private String message = SOMETHING_WENT_WRONG_MESSAGE;

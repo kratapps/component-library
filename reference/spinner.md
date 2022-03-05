@@ -12,7 +12,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 
 ## Specification
 Use the exported showSpinner/hideSpinner functions instead of the api show/hide methods
-to select the c-spinner component automatically. See the [example](#example).
+to select the c-spinner component automatically.
 
 ### Exports
 | Name        | Arguments                    | Returns | Description                                                                                                    |
@@ -26,7 +26,7 @@ to select the c-spinner component automatically. See the [example](#example).
 | show |           | Promise | Show the spinner over its slotted content. Use the exported showSpinner function to get the c-spinner component, and to call the show method automatically. |
 | hide |           | Promise | Hide the spinner. Use the exported hideSpinner function to get the c-spinner component, and to call the hide method automatically.                          |
 
-### Example
+## Example
 ```html
 <div class="slds-is-relative">
   <c-spinner>

@@ -68,9 +68,9 @@ function formatError(e) {
  * @param {any} error
  * @param {ProcessErrorConfig} config
  */
-export function processError(error, config = {}) {
+export function handleError(error, config = {}) {
     const formatted = formatError(error);
-    console.error('processError', {error, formatted, config});
+    console.error({error, formatted, config});
     const {element, showToast, showPrompt} = config;
     const {title, message} = formatted;
 

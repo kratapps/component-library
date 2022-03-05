@@ -9,7 +9,9 @@ Deploy Alert:
 sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/alert -u myOrg
 ```
 
-## Attributes
+## Specification
+
+### Attributes
 | Name            | Type                                | Required | Default | Description                                        |
 |-----------------|-------------------------------------|----------|---------|----------------------------------------------------|
 | variant         | info / warning / error / offline    |          | info    | Variant of the alert.                              |
@@ -20,6 +22,6 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 ## Example
 ```html
 <c-alert variant="warning">
-    Your alert is here.
+    Alert message or component.
 </c-alert>
 ```
