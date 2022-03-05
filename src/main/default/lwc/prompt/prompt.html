@@ -24,7 +24,9 @@
                     <footer class="slds-modal__footer slds-theme_default">
                         <slot name="footer">
                             <template for:each={buttonItems} for:item="it">
-                                <button key={it.value} value={it.value} class={it.classNames} onclick={handleButtonClick}>{it.title}</button>
+                                <button key={it.value} value={it.value} class={it.classNames}
+                                        onclick={handleButtonClick}>{it.label}
+                                </button>
                             </template>
                         </slot>
                     </footer>

@@ -15,7 +15,7 @@ export default class Prompt extends LightningElement {
     @api buttons = [
         {
             value: 'gotIt',
-            title: 'Got It',
+            label: 'Got It',
             variant: 'neutral',
             eventName: 'close'
         }
