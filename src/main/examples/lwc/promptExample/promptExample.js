@@ -8,7 +8,7 @@ export default class PromptExample extends LightningElement {
         this.show = true;
     }
     
-    handleClose() {
+    handleCloseClick() {
         this.show = false;
     }
 }

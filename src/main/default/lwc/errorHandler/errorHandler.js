@@ -58,8 +58,8 @@ function formatError(e) {
 /**
  * @typedef {Object} ProcessErrorConfig
  * @property {LightningElement} element - The 'this' component. Required to show toast/show prompt.
- * @property {boolean} showToast - To show toast. Property 'element' is required. Shown by default.
- * @property {boolean} showPrompt - To show prompt. Property 'element' is required. Shown only if toast not shown.
+ * @property {boolean} [showToast] - To show toast. Property 'element' is required. Shown by default.
+ * @property {boolean} [showPrompt] - To show prompt. Property 'element' is required. Shown only if toast not shown.
  */
 
 /**
