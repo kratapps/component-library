@@ -1,0 +1,19 @@
+<template>
+    <div class="slds-p-vertical_x-small">
+        <c-alert variant="info">Info</c-alert>
+    </div>
+    <div class="slds-p-vertical_x-small">
+        <c-alert variant="warning">Warning</c-alert>
+    </div>
+    <div class="slds-p-vertical_x-small">
+        <c-alert variant="error">Error</c-alert>
+    </div>
+    <div class="slds-p-vertical_x-small">
+        <c-alert variant="offline">Offline</c-alert>
+    </div>
+    <div class="slds-p-vertical_x-small">
+        <c-alert variant="error" closeable="true" hidden={isClosed} onclose={handleClose}>
+            Closeable Alert
+        </c-alert>
+    </div>
+</template>
