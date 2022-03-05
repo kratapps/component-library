@@ -7,7 +7,7 @@ Showing and hiding spinner works immediately.
 ## Installation
 Deploy Spinner:
 ```
-sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/lwc-library -p src/main/default/lwc/spinner -u myOrg
+sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/spinner -u myOrg
 ```
 
 ## Specification

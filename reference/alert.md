@@ -6,7 +6,7 @@ Wrapper for the [slds alert](https://www.lightningdesignsystem.com/components/al
 ## Installation
 Deploy Alert:
 ```
-sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/lwc-library -p src/main/default/lwc/alert -u myOrg
+sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/alert -u myOrg
 ```
 
 ## Attributes

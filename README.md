@@ -13,7 +13,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 ```
 or clone the project and deploy using standard sfdx command:
 ```shell
-git clone https://github.com/kratapps/lwc-component.git
+git clone https://github.com/kratapps/component-library.git
 cd component-library
 sfdx force:source:deploy -p src/main/default/lwc -u myOrg
 ```
