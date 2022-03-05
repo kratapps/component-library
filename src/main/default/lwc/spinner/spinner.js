@@ -17,8 +17,7 @@ export default class Spinner extends LightningElement {
         console.log("show spinner");
         return new Promise((resolve) => {
             this.loading = true;
-            // eslint-disable-next-line @lwc/lwc/no-async-operation
-            setTimeout(resolve, 0);
+            this.runAsync(resolve);
         });
     }
 
@@ -27,15 +26,19 @@ export default class Spinner extends LightningElement {
         console.log("hide spinner");
         return new Promise((resolve) => {
             this.loading = false;
-            // eslint-disable-next-line @lwc/lwc/no-async-operation
-            setTimeout(resolve, 0);
+            this.runAsync(resolve);
         });
+    }
+    
+    async runAsync(handler) {
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        setTimeout(handler, 0);
     }
 }
 
 export async function showSpinner(component) {
     if (!component) {
-        console.error("To show spinner you need to provide a component");
+        console.error("To show spinner you need to provide a c-spinner component");
     }
     const spinner = component.template.querySelector("c-spinner");
     if (spinner) {
@@ -47,7 +50,7 @@ export async function showSpinner(component) {
 
 export async function hideSpinner(component) {
     if (!component) {
-        console.error("To hide spinner you need to provide a component");
+        console.error("To hide spinner you need to provide a c-spinner component");
     }
     const spinner = component.template.querySelector("c-spinner");
     if (spinner) {
@@ -56,3 +59,4 @@ export async function hideSpinner(component) {
         console.error("c-spinner component not found");
     }
 }
+
