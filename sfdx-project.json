@@ -1,12 +1,23 @@
 {
-  "packageDirectories": [
-    {
-      "path": "src",
-      "default": true
+    "packageDirectories": [
+        {
+            "path": "src",
+            "default": true
+        },
+        {
+            "path": "src/main/default",
+            "package": "Component Library",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT",
+            "default": false
+        }
+    ],
+    "name": "component-library",
+    "namespace": "",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "51.0",
+    "packageAliases": {
+        "Component Library": "0Ho5e0000004ChfCAE",
+        "Component Library@0.1.0-1": "04t5e000000vmNWAAY"
     }
-  ],
-  "name": "component-library",
-  "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "51.0"
 }
