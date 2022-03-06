@@ -1,8 +1,10 @@
 # Alert
 
-![lwc](https://img.shields.io/badge/lwc-blue)
+![lwc](https://img.shields.io/badge/LWC-component-blue)
 
 Wrapper for the [slds alert](https://www.lightningdesignsystem.com/components/alert/).
+
+Alert banners communicate a state that affects the entire system, not just a feature or page. It persists over a session and appears without the user initiating the action.
 
 ## Installation
 

@@ -1,6 +1,8 @@
 # Spinner
 
-![lwc](https://img.shields.io/badge/lwc-blue)
+![lwc](https://img.shields.io/badge/LWC-component-blue)
+
+Displays an animated spinner.
 
 Spinners are a loading indicators that should be shown when retrieving data or performing slow computations. Showing and
 hiding spinner works immediately.

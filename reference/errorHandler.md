@@ -1,6 +1,6 @@
 # Error Handler
 
-![lwc](https://img.shields.io/badge/service-yellow)
+![lwc](https://img.shields.io/badge/LWC-service-yellow)
 
 Handle errors and show either a toast or error prompt to a user.
 

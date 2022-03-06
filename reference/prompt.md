@@ -1,6 +1,8 @@
 # Prompt
 
-![lwc](https://img.shields.io/badge/lwc-blue)
+![lwc](https://img.shields.io/badge/LWC-component-blue)
+
+Wrapper for the [slds prompt](https://www.lightningdesignsystem.com/components/prompt/).
 
 Prompt notice grabs the user’s attention & alerts them of system-related issues/updates.
 
