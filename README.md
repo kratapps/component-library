@@ -1,6 +1,6 @@
 # Component Library
 
-Custom LWC and Apex Components.
+Custom Salesforce LWC and Apex Components.
 
 ## Installation
 Use our sfdx plugin to install all components without cloning:
@@ -18,14 +18,14 @@ cd component-library
 sfdx force:source:deploy -p src/main/default/lwc -u myOrg
 ```
 
-## Components
+## LWC Components
 * Alert
 * Error Handler Prompt
 * Prompt
 * Spinner
 
-## Services
+## LWC Services
 * errorHandler - process structured errors for better UX
 
-## Classes
+## Apex Classes
 * LightningError - build structured errors for better UX
