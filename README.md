@@ -19,7 +19,7 @@ sfdx force:source:deploy -p src/main/default/lwc -u myOrg
 ```
 
 ## Documentation
-Full documentation available at [kratapps.com](https://kratapps.com/component-library).
+Full documentation available at [kratapps.com/component-library](https://kratapps.com/component-library).
 
 ### LWC Components
 * Alert
