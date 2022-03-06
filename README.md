@@ -18,14 +18,17 @@ cd component-library
 sfdx force:source:deploy -p src/main/default/lwc -u myOrg
 ```
 
-## LWC Components
+## Documentation
+Full documentation available at [kratapps.com](https://kratapps.com/component-library).
+
+### LWC Components
 * Alert
 * Error Handler Prompt
 * Prompt
 * Spinner
 
-## LWC Services
-* errorHandler - process structured errors for better UX
+### LWC Services
+* errorHandler - handle errors and show error messages to users
 
-## Apex Classes
-* LightningError - build structured errors for better UX
+### Apex Classes
+* LightningError - build serialized error in `AuraEnabled` controllers
