@@ -39,7 +39,7 @@ Simply import the `handleError` and call the function when error occurs. The `el
 LightningElement.
 
 ```javascript
-import {processError} from "c/errorHandler";
+import {handleError} from "c/errorHandler";
 
 try {
     // do your logic here
