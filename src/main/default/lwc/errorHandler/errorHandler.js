@@ -87,11 +87,51 @@ function formatError(e) {
     return formatted;
 }
 
+function debounce(fn, delay = 1000) {
+    let timer = null;
+    return function () {
+        let context = this, args = arguments;
+        clearTimeout(timer);
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        timer = setTimeout(function () {
+            fn.apply(context, args);
+        }, delay);
+    };
+}
+
+function showToastEvent(element, title, message, debounce) {
+    if (debounce) {
+        debouncedShowToastEvent(element, title, message, false);
+    } else {
+        element.dispatchEvent(new ShowToastEvent({
+            title,
+            message,
+            mode: 'sticky',
+            variant: 'error'
+        }));
+    }
+}
+
+function showErrorPrompt(promptElement, title, message, debounce) {
+    if (debounce) {
+        debouncedShowErrorPrompt(promptElement, title, message, false);
+    } else {
+        promptElement.title = title;
+        promptElement.message = message;
+        promptElement.show();
+    }
+}
+
+const debouncedShowToastEvent = debounce(showToastEvent);
+const debouncedShowErrorPrompt = debounce(showErrorPrompt);
+
+
 /**
  * @typedef {Object} ProcessErrorConfig
  * @property {LightningElement} element - The 'this' component. Required to show toast/show prompt.
  * @property {boolean} [showToast] - To show toast. Property 'element' is required. Shown by default.
  * @property {boolean} [showPrompt] - To show prompt. Property 'element' is required. Shown only if toast not shown.
+ * @property {boolean} [disableDebounce] - By default show only one error if multiple errors handled within a second. Se to true to disable debouncing.
  */
 
 /**
@@ -103,33 +143,19 @@ function formatError(e) {
 export function handleError(error, config = {}) {
     const formatted = formatError(error);
     console.error({error, formatted, config});
-    const {element, showToast, showPrompt} = config;
+    let {element, showToast, showPrompt, disableDebounce = false} = config;
+    const debounce = !disableDebounce;
     const {title, message} = formatted;
 
-    function showToastEvent() {
-        element.dispatchEvent(new ShowToastEvent({
-            title,
-            message,
-            mode: 'sticky',
-            variant: 'error'
-        }));
-    }
-
-    function showErrorHandlerPrompt(promptElement) {
-        promptElement.title = title;
-        promptElement.message = message;
-        promptElement.show();
-    }
-
     if (element && (showToast || !showPrompt)) {
-        showToastEvent();
+        showToastEvent(element, title, message, debounce);
     } else if (element && showPrompt) {
         const promptElement = element.template.querySelector('c-error-handler-prompt');
         if (promptElement) {
-            showErrorHandlerPrompt(promptElement);
+            showErrorPrompt(promptElement, title, message, debounce);
         } else {
             console.error('c-error-handler-prompt not found');
-            showToastEvent();
+            showToastEvent(element, title, message, debounce);
         }
     }
 }

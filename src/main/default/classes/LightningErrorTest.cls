@@ -41,14 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 private class LightningErrorTest {
     @IsTest
     static void test() {
-        String actual;
-        actual = LightningError.create('msg1').serialize();
+        String actual = LightningError.create('msg1').serialize();
         System.assert(actual.contains('output'));
         System.assert(actual.contains('fieldErrors'));
         System.assert(actual.contains('"statusCode":400'));
         System.assert(actual.contains('"enhancedErrorType":"LightningError"'));
         System.assert(actual.contains('"message":"msg1"'));
-        System.debug(actual);
         actual = LightningError.create('msg2')
                 .addError('err1')
                 .addError('err2')
@@ -67,5 +65,6 @@ private class LightningErrorTest {
         System.assert(actual.contains('"fieldName":"Id"'));
         System.assert(actual.contains('"fieldLabel":"Account ID"'));
         System.assert(actual.contains('"errors":[{"message":"err1"},{"message":"err2"}]'));
+        System.assertNotEquals(null, LightningError.create());
     }
 }
