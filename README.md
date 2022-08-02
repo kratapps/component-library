@@ -27,8 +27,8 @@ Full documentation available at [kratapps.com/component-library](https://kratapp
 ### LWC Components
 
 - [Alert](https://kratapps.com/component-library/alert)
-- Error Handler Prompt
-- [Prompt (deprecated)](https://kratapps.com/component-library/prompt)
+- Error Handler Prompt (deprecated)
+- [Prompt](https://kratapps.com/component-library/prompt) (deprecated)
 - [Spinner](https://kratapps.com/component-library/spinner)
 
 ### LWC Services
