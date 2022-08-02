@@ -30,6 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * @author kratapps.com
+ *
+ * DEPRECATED.
+ * Use the standard lightning-alert component:
+ * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
+ */
+
 import { LightningElement, api, track } from "lwc";
 
 export default class ErrorHandlerPrompt extends LightningElement {

@@ -9,7 +9,7 @@ Handle errors and show either a toast or error prompt to a user.
 Deploy service with dependencies:
 
 ```
-sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/errorHandler,src/main/default/lwc/prompt,src/main/default/lwc/errorHandlerPrompt,src/main/default/classes/LightningError.cls,src/main/default/classes/LightningError.cls-meta.xml -u myOrg
+sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/errorHandler,src/main/default/classes/LightningError.cls,src/main/default/classes/LightningError.cls-meta.xml -u myOrg
 ```
 
 ## Specification
@@ -19,17 +19,18 @@ whether toast or prompt should be shown.
 
 ### Exports
 
-| Name         | Arguments                                | Returns   | Description                                                     |
-|--------------|------------------------------------------|-----------|-----------------------------------------------------------------|
-| handleError  | error: any, [config: ProcessErrorConfig] | undefined | Handle error and show either a toast or error prompt to a user. |
+| Name        | Arguments                                | Returns   | Description                                                        |
+| ----------- | ---------------------------------------- | --------- | ------------------------------------------------------------------ |
+| handleError | error: any, [config: ProcessErrorConfig] | undefined | Handle error and show either a toast or an error prompt to a user. |
 
 ### ProcessErrorConfig Type
 
-| Name        | Type             | Required | Default | Description                                                    |
-|-------------|------------------|----------|---------|----------------------------------------------------------------|
-| element     | LightningElement | yes      |         | Usually the 'this' component. Required to show toast/prompt.   |
-| showToast   | boolean          |          | true    | Show error toast.                                              |
-| showPrompt  | boolean          |          |         | Show error prompt. Used to show more detail than toast.        |
+| Name            | Type             | Required | Default | Description                                                                 |
+| --------------- | ---------------- | -------- | ------- | --------------------------------------------------------------------------- |
+| element         | LightningElement | yes      |         | Usually the 'this' component. Required to show toast/prompt.                |
+| showToast       | boolean          |          | true    | Show error toast.                                                           |
+| showPrompt      | boolean          |          |         | Show error prompt. Used to show more detail than toast.                     |
+| disableDebounce | boolean          |          |         | By default, show only one error if multiple errors handled within a second. |
 
 ## Example
 
@@ -39,41 +40,31 @@ Simply import the `handleError` and call the function when error occurs. The `el
 LightningElement.
 
 ```javascript
-import {handleError} from "c/errorHandler";
+import { handleError } from "c/errorHandler";
 
 try {
-    // do your logic here
+  // do your logic here
 } catch (e) {
-    handleError(e, {element: this});
+  handleError(e, { element: this });
 }
 ```
 
 ### Handler with error prompt
 
-Add `c-error-handler-prompt` component to your component.
-
-When using in the `connectedCallback` hook, ensure the `c-error-handler-prompt` is already rendered otherwise the prompt
-won't be shown.
-
-```html
-
-<c-error-handler-prompt></c-error-handler-prompt>
-```
-
 Set `showPrompt` to true.
 
 ```javascript
 try {
-    // do your logic here
+  // do your logic here
 } catch (e) {
-    handleError(e, {element: this, showPrompt: true});
+  handleError(e, { element: this, showPrompt: true });
 }
 ```
 
 ### Lightning Error handling
 
-`LightningError` can be used to build serialized error in `AuraEnabled` controllers. This error is then parsed and
-processed by `handleError` function.
+`LightningError` can be used to build serialized error in `AuraEnabled` controllers.
+This error is then parsed and processed by `handleError` function.
 
 ```apex
 @AuraEnabled

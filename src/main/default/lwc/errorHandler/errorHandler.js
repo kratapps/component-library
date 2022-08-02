@@ -30,9 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import LightningAlert from "lightning/alert";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-
-const errorHandlerPromptNotFound = "c-error-handler-prompt not found";
 
 function formatErrorWithBody(formatted, e) {
   let body;
@@ -121,22 +120,24 @@ function showToastEvent(element, title, message, debounce) {
   }
 }
 
-function showErrorPrompt(promptElement, title, message, debounce) {
+async function showErrorPrompt(title, message, debounce) {
   if (debounce) {
-    debouncedShowErrorPrompt(promptElement, title, message, false);
+    debouncedShowErrorPrompt(title, message, false);
   } else {
-    promptElement.title = title;
-    promptElement.message = message;
-    promptElement.show();
+    await LightningAlert.open({
+      label: title,
+      message: message,
+      theme: "error"
+    });
   }
 }
 
 /**
  * @typedef {Object} ProcessErrorConfig
- * @property {LightningElement} element - The 'this' component. Required to show toast/show prompt.
- * @property {boolean} [showToast] - To show toast. Property 'element' is required. Shown by default.
- * @property {boolean} [showPrompt] - To show prompt. Property 'element' is required. Shown only if toast not shown.
- * @property {boolean} [disableDebounce] - By default show only one error if multiple errors handled within a second.
+ * @property {LightningElement} element - Usually the 'this' component. Required to show toast/prompt.
+ * @property {boolean} [showToast] - Show error toast.
+ * @property {boolean} [showPrompt] - Show error prompt. Used to show more detail than toast.
+ * @property {boolean} [disableDebounce] - By default, show only one error if multiple errors handled within a second.
  * Set to true to disable debouncing.
  */
 
@@ -146,7 +147,7 @@ function showErrorPrompt(promptElement, title, message, debounce) {
  * @param {any} error
  * @param {ProcessErrorConfig} config
  */
-export function handleError(error, config = {}) {
+export async function handleError(error, config = {}) {
   const formatted = formatError(error);
   // eslint-disable-next-line no-console
   console.error({ config, error, formatted });
@@ -157,15 +158,6 @@ export function handleError(error, config = {}) {
   if (element && (showToast || !showPrompt)) {
     showToastEvent(element, title, message, debounce);
   } else if (element && showPrompt) {
-    const promptElement = element.template.querySelector(
-      "c-error-handler-prompt"
-    );
-    if (promptElement) {
-      showErrorPrompt(promptElement, title, message, debounce);
-    } else {
-      // eslint-disable-next-line no-console
-      console.error(errorHandlerPromptNotFound);
-      showToastEvent(element, title, message, debounce);
-    }
+    await showErrorPrompt(title, message, debounce);
   }
 }
