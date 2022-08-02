@@ -15,4 +15,4 @@ create-package-version:
 	sfdx force:package:version:create --codecoverage --package "Component Library" --definitionfile config/project-scratch-def.json --wait 60 --installationkeybypass -v ${devhub_alias}
 	
 source-scanner:
-	sfdx scanner:run -t src/ok/main/component-library/ --severity-threshold 3
+	sfdx scanner:run -t src/ --engine "eslint-lwc,pmd" --severity-threshold 3

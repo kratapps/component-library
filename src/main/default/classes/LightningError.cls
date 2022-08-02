@@ -31,13 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- * Build structured errors.
+ * @author kratapps.com
+ * 
+ * @description Build structured errors.
  * Serialize LightningError instance for the AuraHandledException 
  * and in lwc use the processError function from errorHandler.js.
  * 
  * https://kratapps.com/component-library
- *
- * @author  kratapps.com
  */
 public class LightningError {
     private static final String SOMETHING_WENT_WRONG_MESSAGE = 'Something went wrong';
@@ -47,31 +47,71 @@ public class LightningError {
     private String enhancedErrorType = 'LightningError';
     private Integer statusCode = 400;
 
+    /**
+     * @description Create a new Lightning Error.
+     * 
+     * @return a new Lightning Error.
+     */
     public static LightningError create() {
         return new LightningError();
     }
-    
+
+    /**
+     * @description Create a new Lightning Error.
+     * 
+     * @param message the error message.
+     *
+     * @return a new Lightning Error.
+     */
     public static LightningError create(String message) {
         LightningError error = new LightningError();
         error.setMessage(message);
         return error;
     }
 
+    /**
+     * @description Add generic error to Lightning Error.
+     * 
+     * @param message the error message.
+     *
+     * @return the current Lightning Error.
+     */
     public LightningError addError(String message) {
         errors.add(new LightningError.Error(message));
         return this;
     }
 
+    /**
+     * @description Add field error to Lightning Error.
+     * 
+     * @param field the error SObject field.
+     * @param message the error message.
+     *
+     * @return the current Lightning Error.
+     */
     public LightningError addFieldError(SObjectField field, String message) {
         DescribeFieldResult dfr = field.getDescribe();
         return addFieldError(new LightningError.FieldError(message, dfr.getName(), dfr.getLabel()));
     }
 
+    /**
+     * @description Set Lightning Error message.
+     * 
+     * @param message the error message.
+     *
+     * @return the current Lightning Error.
+     */
     public LightningError setMessage(String message) {
         this.message = message;
         return this;
     }
 
+    /**
+     * @description Serialize the Lightning Error which can be thrown using the AuraHandledException 
+     * and handled automatically using the errorHandler component.
+     * 
+     * @return the serialized Lightning Error.
+     */
     public String serialize() {
         return serialize(message, errors, fieldErrors);
     }

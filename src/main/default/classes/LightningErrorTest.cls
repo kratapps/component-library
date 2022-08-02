@@ -31,40 +31,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- * Test class for LightningError.
- * 
- * https://kratapps.com/component-library
- * 
- * @author  kratapps.com
+ * @author kratapps.com
+ *
+ * @description Unit tests for LightningError class.
  */
 @IsTest
 private class LightningErrorTest {
     @IsTest
     static void test() {
         String actual = LightningError.create('msg1').serialize();
-        System.assert(actual.contains('output'));
-        System.assert(actual.contains('fieldErrors'));
-        System.assert(actual.contains('"statusCode":400'));
-        System.assert(actual.contains('"enhancedErrorType":"LightningError"'));
-        System.assert(actual.contains('"message":"msg1"'));
+        System.assert(actual.contains('output'), 'Serialized error should include output.');
+        System.assert(actual.contains('fieldErrors'), 'Serialized error should include field error.');
+        System.assert(actual.contains('"statusCode":400'), 'Serialized error should include status code.');
+        System.assert(actual.contains('"enhancedErrorType":"LightningError"'), 'Serialized error should include enhanced error type.');
+        System.assert(actual.contains('"message":"msg1"'), 'Serialized error should include message.');
         actual = LightningError.create('msg2')
                 .addError('err1')
                 .addError('err2')
                 .addFieldError(Account.Name, 'field1')
                 .addFieldError(Account.Id, 'field2')
                 .serialize();
-        System.assert(actual.contains('output'));
-        System.assert(actual.contains('fieldErrors'));
-        System.assert(actual.contains('"statusCode":400'));
-        System.assert(actual.contains('"enhancedErrorType":"LightningError"'));
-        System.assert(actual.contains('"message":"msg2"'));
-        System.assert(actual.contains('"message":"field1"'));
-        System.assert(actual.contains('"fieldLabel":"Account Name"'));
-        System.assert(actual.contains('"fieldName":"Name"'));
-        System.assert(actual.contains('"message":"field2"'));
-        System.assert(actual.contains('"fieldName":"Id"'));
-        System.assert(actual.contains('"fieldLabel":"Account ID"'));
-        System.assert(actual.contains('"errors":[{"message":"err1"},{"message":"err2"}]'));
-        System.assertNotEquals(null, LightningError.create());
+        System.assert(actual.contains('output'), 'Serialized error should include output.');
+        System.assert(actual.contains('fieldErrors'), 'Serialized error should include field errors.');
+        System.assert(actual.contains('"statusCode":400'), 'Serialized error should include status code.');
+        System.assert(actual.contains('"enhancedErrorType":"LightningError"'), 'Serialized error should include enhanced error type.');
+        System.assert(actual.contains('"message":"msg2"'), 'Serialized error should include message.');
+        System.assert(actual.contains('"message":"field1"'), 'Serialized error should include message.');
+        System.assert(actual.contains('"fieldLabel":"Account Name"'), 'Serialized error should include field label.');
+        System.assert(actual.contains('"fieldName":"Name"'), 'Serialized error should include field name.');
+        System.assert(actual.contains('"message":"field2"'), 'Serialized error should include message');
+        System.assert(actual.contains('"fieldName":"Id"'), 'Serialized error should include field name.');
+        System.assert(actual.contains('"fieldLabel":"Account ID"'), 'Serialized error should include field label.');
+        System.assert(actual.contains('"errors":[{"message":"err1"},{"message":"err2"}]'), 'Serialized error should include array of messages.');
+        System.assertNotEquals(null, LightningError.create(), 'Error should be created.');
     }
 }
