@@ -8,7 +8,7 @@ Handle errors and show either a toast or error prompt to a user.
 
 Deploy service with dependencies:
 
-```
+```text
 sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/errorHandler,src/main/default/classes/LightningError.cls,src/main/default/classes/LightningError.cls-meta.xml -u myOrg
 ```
 

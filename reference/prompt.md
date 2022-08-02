@@ -16,7 +16,7 @@ Prompt notice grabs the user’s attention & alerts them of system-related issue
 
 Deploy Prompt:
 
-```
+```text
 sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/deprecated/lwc/prompt -u myOrg
 ```
 

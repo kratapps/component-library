@@ -10,7 +10,7 @@ Alert banners communicate a state that affects the entire system, not just a fea
 
 Deploy Alert:
 
-```
+```text
 sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/lwc/alert -u myOrg
 ```
 
@@ -18,18 +18,15 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 
 ### Attributes
 
-| Name            | Type                                | Required | Default | Description                                        |
-|-----------------|-------------------------------------|----------|---------|----------------------------------------------------|
-| variant         | info / warning / error / offline    |          | info    | Variant of the alert.                              |
-| closeable       | boolean                             |          | false   | If true, the alert can be closed by a user action. |
-| hidden          | boolean                             |          | false   | Show/hide the alert.                               |
-| iconDescription | string                              |          |         | Icon title.                                        |
+| Name            | Type                             | Required | Default | Description                                        |
+| --------------- | -------------------------------- | -------- | ------- | -------------------------------------------------- |
+| variant         | info / warning / error / offline |          | info    | Variant of the alert.                              |
+| closeable       | boolean                          |          | false   | If true, the alert can be closed by a user action. |
+| hidden          | boolean                          |          | false   | Show/hide the alert.                               |
+| iconDescription | string                           |          |         | Icon title.                                        |
 
 ## Example
 
 ```html
-
-<c-alert variant="warning">
-    Alert message or component.
-</c-alert>
+<c-alert variant="warning"> Alert message or component. </c-alert>
 ```
