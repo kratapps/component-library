@@ -39,31 +39,31 @@
 import { LightningElement, api } from "lwc";
 
 const variantToIconName = {
-  info: "utility:user",
-  warning: "utility:warning",
   error: "utility:error",
-  offline: "utility:offline"
+  info: "utility:user",
+  offline: "utility:offline",
+  warning: "utility:warning"
 };
 
 const variantToLabel = {
-  info: "Info",
-  warning: "Warning",
   error: "Error",
-  offline: "Offline"
+  info: "Info",
+  offline: "Offline",
+  warning: "Warning"
 };
 
 const variantToAlertClass = {
-  info: "",
-  warning: "slds-alert_warning",
   error: "slds-alert_error",
-  offline: "slds-alert_offline"
+  info: "",
+  offline: "slds-alert_offline",
+  warning: "slds-alert_warning"
 };
 
 const variantToIconClass = {
-  info: "slds-icon-utility-user",
-  warning: "slds-icon-utility-warning",
   error: "slds-icon-utility-error",
-  offline: "slds-icon-utility-offline"
+  info: "slds-icon-utility-user",
+  offline: "slds-icon-utility-offline",
+  warning: "slds-icon-utility-warning"
 };
 
 export default class Alert extends LightningElement {

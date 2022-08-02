@@ -7,6 +7,8 @@
   ],
   "rules": {
     "@lwc/lwc/no-async-await": "off",
+    "@lwc/lwc/no-for-of": "off",
+    "@lwc/lwc/no-rest-parameter": "off",
     "constructor-super": "error",
     "for-direction": "error",
     "getter-return": "error",

@@ -32,6 +32,8 @@
 
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 
+const errorHandlerPromptNotFound = "c-error-handler-prompt not found";
+
 function formatErrorWithBody(formatted, e) {
   let body;
   try {
@@ -68,9 +70,9 @@ function formatErrorWithBody(formatted, e) {
 
 function formatError(e) {
   const formatted = {
-    title: undefined,
     message: undefined,
-    stack: undefined
+    stack: undefined,
+    title: undefined
   };
   if (e instanceof String || typeof e === "string") {
     formatted.title = e;
@@ -87,9 +89,10 @@ function formatError(e) {
   return formatted;
 }
 
-function debounce(fn, delay = 1000) {
+function debounceFun(fn, delay = 1000) {
   let timer = null;
   return function () {
+    // eslint-disable-next-line no-invalid-this
     let context = this,
       args = arguments;
     clearTimeout(timer);
@@ -100,15 +103,18 @@ function debounce(fn, delay = 1000) {
   };
 }
 
+const debouncedShowToastEvent = debounceFun(showToastEvent);
+const debouncedShowErrorPrompt = debounceFun(showErrorPrompt);
+
 function showToastEvent(element, title, message, debounce) {
   if (debounce) {
     debouncedShowToastEvent(element, title, message, false);
   } else {
     element.dispatchEvent(
       new ShowToastEvent({
-        title,
         message,
         mode: "sticky",
+        title,
         variant: "error"
       })
     );
@@ -125,15 +131,13 @@ function showErrorPrompt(promptElement, title, message, debounce) {
   }
 }
 
-const debouncedShowToastEvent = debounce(showToastEvent);
-const debouncedShowErrorPrompt = debounce(showErrorPrompt);
-
 /**
  * @typedef {Object} ProcessErrorConfig
  * @property {LightningElement} element - The 'this' component. Required to show toast/show prompt.
  * @property {boolean} [showToast] - To show toast. Property 'element' is required. Shown by default.
  * @property {boolean} [showPrompt] - To show prompt. Property 'element' is required. Shown only if toast not shown.
- * @property {boolean} [disableDebounce] - By default show only one error if multiple errors handled within a second. Se to true to disable debouncing.
+ * @property {boolean} [disableDebounce] - By default show only one error if multiple errors handled within a second.
+ * Set to true to disable debouncing.
  */
 
 /**
@@ -144,7 +148,8 @@ const debouncedShowErrorPrompt = debounce(showErrorPrompt);
  */
 export function handleError(error, config = {}) {
   const formatted = formatError(error);
-  console.error({ error, formatted, config });
+  // eslint-disable-next-line no-console
+  console.error({ config, error, formatted });
   let { element, showToast, showPrompt, disableDebounce = false } = config;
   const debounce = !disableDebounce;
   const { title, message } = formatted;
@@ -158,7 +163,8 @@ export function handleError(error, config = {}) {
     if (promptElement) {
       showErrorPrompt(promptElement, title, message, debounce);
     } else {
-      console.error("c-error-handler-prompt not found");
+      // eslint-disable-next-line no-console
+      console.error(errorHandlerPromptNotFound);
       showToastEvent(element, title, message, debounce);
     }
   }

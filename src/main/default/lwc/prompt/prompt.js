@@ -33,10 +33,10 @@
 import { LightningElement, api } from "lwc";
 
 const variantToTheme = {
-  info: "slds-theme_info",
-  warning: "slds-theme_warning",
   error: "slds-theme_error",
-  offline: "slds-theme_offline"
+  info: "slds-theme_info",
+  offline: "slds-theme_offline",
+  warning: "slds-theme_warning"
 };
 
 export default class Prompt extends LightningElement {
@@ -46,10 +46,10 @@ export default class Prompt extends LightningElement {
   @api disableClose = false;
   @api buttons = [
     {
-      value: "gotIt",
+      eventName: "close",
       label: "Got It",
-      variant: "neutral",
-      eventName: "close"
+      value: "gotIt",
+      variant: "neutral"
     }
   ];
 
