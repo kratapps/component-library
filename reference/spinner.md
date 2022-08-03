@@ -23,14 +23,14 @@ component automatically.
 ### Exports
 
 | Name        | Arguments                    | Returns | Description                                                                                                    |
-| ----------- | ---------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+|-------------|------------------------------|---------|----------------------------------------------------------------------------------------------------------------|
 | showSpinner | component (LightningElement) | Promise | Select the c-spinner in the component's markup and show the spinner. The component argument is usually 'this'. |
 | hideSpinner | component (LightningElement) | Promise | Select the c-spinner in the component's markup and hide the spinner. The component argument is usually 'this'. |
 
 ### Methods
 
 | Name | Arguments | Returns | Description                                                                                                                                                 |
-| ---- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|------|-----------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | show |           | Promise | Show the spinner over its slotted content. Use the exported showSpinner function to get the c-spinner component, and to call the show method automatically. |
 | hide |           | Promise | Hide the spinner. Use the exported hideSpinner function to get the c-spinner component, and to call the hide method automatically.                          |
 

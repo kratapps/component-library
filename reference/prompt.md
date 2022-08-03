@@ -25,7 +25,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 ### Attributes
 
 | Name         | Type                             | Required | Default          | Description                                       |
-| ------------ | -------------------------------- | -------- | ---------------- | ------------------------------------------------- |
+|--------------|----------------------------------|----------|------------------|---------------------------------------------------|
 | title        | string                           | true     |                  | Prompt title.                                     |
 | variant      | info / warning / error / offline |          | info             | Prompt variant.                                   |
 | show         | boolean                          |          | false            | Show/hide prompt.                                 |
@@ -35,7 +35,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 ### PromptButton Type
 
 | Name      | Type   | Required | Default | Description                                                                                                         |
-| --------- | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+|-----------|--------|----------|---------|---------------------------------------------------------------------------------------------------------------------|
 | value     | string | yes      |         | The value for the button element.                                                                                   |
 | label     | string | yes      |         | The text to be displayed inside the button.                                                                         |
 | variant   | string | yes      | neutral | Accepted variants include base, neutral, brand, brand-outline, destructive, destructive-text, inverse, and success. |
