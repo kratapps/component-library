@@ -3,7 +3,7 @@
 ![deprecated](https://img.shields.io/badge/DEPRECATED-red)
 ![lwc](https://img.shields.io/badge/LWC-component-blue)
 
-> This component was deprecated.
+> ⚠️ This component was deprecated.
 > Use the standard
 > [lightning-alert](https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation)
 > component.
