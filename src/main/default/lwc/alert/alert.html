@@ -1,28 +1,23 @@
 <template>
-  <template if:false={hidden}>
-    <div class={alertClasses} role="alert">
-      <span class="slds-assistive-text">{variantLabel}</span>
-      <span class={containerClasses} title={iconDescription}>
-        <lightning-icon
-          icon-name={iconName}
-          alternative-text={variantLabel}
-          title={variantLabel}
-          size="x-small"
-        ></lightning-icon>
-      </span>
-      <h2>
-        <slot></slot>
-      </h2>
-      <template if:true={closeable}>
-        <div class="slds-notify__close">
-          <lightning-button-icon
-            icon-name="utility:close"
-            alternative-text="close"
-            title="Close"
-            onclick={handleCloseClick}
-          ></lightning-button-icon>
+    <template if:false={hidden}>
+        <div class={alertClasses} role="alert">
+            <span class="slds-assistive-text">{variantLabel}</span>
+            <span class={containerClasses} title={iconDescription}>
+                <lightning-icon icon-name={iconName} alternative-text={variantLabel} title={variantLabel} size="x-small"></lightning-icon>
+            </span>
+            <h2>
+                <slot></slot>
+            </h2>
+            <template if:true={closeable}>
+                <div class="slds-notify__close">
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        alternative-text="close"
+                        title="Close"
+                        onclick={handleCloseClick}
+                    ></lightning-button-icon>
+                </div>
+            </template>
         </div>
-      </template>
-    </div>
-  </template>
+    </template>
 </template>

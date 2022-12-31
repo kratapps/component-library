@@ -1,10 +1,6 @@
 <template>
-  <template if:true={loading}>
-    <lightning-spinner
-      alternative-text="Loading"
-      variant="brand"
-      class="slds-p-around_small"
-    ></lightning-spinner>
-  </template>
-  <slot></slot>
+    <template if:true={loading}>
+        <lightning-spinner alternative-text="Loading" variant="brand" class="slds-p-around_small"></lightning-spinner>
+    </template>
+    <slot></slot>
 </template>

@@ -3,7 +3,11 @@
   "overrides": [
     {
       "files": "**/lwc/**/*.html",
-      "options": { "parser": "lwc" }
+      "options": {
+        "parser": "lwc",
+        "printWidth": 140,
+        "tabWidth": 4
+      }
     },
     {
       "files": "**/*.{cls,trigger,apex}",
@@ -15,7 +19,11 @@
     },
     {
       "files": "*.{cmp,page,component}",
-      "options": { "parser": "html" }
+      "options": {
+        "parser": "html",
+        "printWidth": 120,
+        "tabWidth": 4
+      }
     }
   ]
 }
