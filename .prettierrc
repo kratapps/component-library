@@ -5,7 +5,7 @@
       "files": "**/lwc/**/*.html",
       "options": {
         "parser": "lwc",
-        "printWidth": 140,
+        "printWidth": 100,
         "tabWidth": 4
       }
     },
@@ -21,7 +21,7 @@
       "files": "*.{cmp,page,component}",
       "options": {
         "parser": "html",
-        "printWidth": 120,
+        "printWidth": 100,
         "tabWidth": 4
       }
     }
