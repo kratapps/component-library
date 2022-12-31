@@ -32,11 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**
  * @author kratapps.com
- * 
+ *
  * @description Build structured errors.
- * Serialize LightningError instance for the AuraHandledException 
+ * Serialize LightningError instance for the AuraHandledException
  * and in lwc use the processError function from errorHandler.js.
- * 
+ *
  * https://kratapps.com/component-library
  */
 public class LightningError {
@@ -49,7 +49,7 @@ public class LightningError {
 
     /**
      * @description Create a new Lightning Error.
-     * 
+     *
      * @return a new Lightning Error.
      */
     public static LightningError create() {
@@ -58,7 +58,7 @@ public class LightningError {
 
     /**
      * @description Create a new Lightning Error.
-     * 
+     *
      * @param message the error message.
      *
      * @return a new Lightning Error.
@@ -71,7 +71,7 @@ public class LightningError {
 
     /**
      * @description Add generic error to Lightning Error.
-     * 
+     *
      * @param message the error message.
      *
      * @return the current Lightning Error.
@@ -83,7 +83,7 @@ public class LightningError {
 
     /**
      * @description Add field error to Lightning Error.
-     * 
+     *
      * @param field the error SObject field.
      * @param message the error message.
      *
@@ -96,7 +96,7 @@ public class LightningError {
 
     /**
      * @description Set Lightning Error message.
-     * 
+     *
      * @param message the error message.
      *
      * @return the current Lightning Error.
@@ -107,15 +107,15 @@ public class LightningError {
     }
 
     /**
-     * @description Serialize the Lightning Error which can be thrown using the AuraHandledException 
+     * @description Serialize the Lightning Error which can be thrown using the AuraHandledException
      * and handled automatically using the errorHandler component.
-     * 
+     *
      * @return the serialized Lightning Error.
      */
     public String serialize() {
         return serialize(message, errors, fieldErrors);
     }
-    
+
     private LightningError addFieldError(LightningError.FieldError e) {
         if (!fieldErrors.containsKey(e.fieldName)) {
             fieldErrors.put(e.fieldName, new List<LightningError.FieldError>());
@@ -123,16 +123,13 @@ public class LightningError {
         fieldErrors.get(e.fieldName).add(e);
         return this;
     }
-    
+
     private String serialize(String message, List<LightningError.Error> errors, Map<String, List<LightningError.FieldError>> fieldErrors) {
         Map<String, Object> body = new Map<String, Object>();
         body.put('message', message);
         body.put('statusCode', statusCode);
         body.put('enhancedErrorType', enhancedErrorType);
-        body.put('output', new Map<String, Object>{
-                'errors' => errors,
-                'fieldErrors' => fieldErrors
-        });
+        body.put('output', new Map<String, Object>{ 'errors' => errors, 'fieldErrors' => fieldErrors });
         return JSON.serialize(body);
     }
 

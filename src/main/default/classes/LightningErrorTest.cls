@@ -46,11 +46,11 @@ private class LightningErrorTest {
         System.assert(actual.contains('"enhancedErrorType":"LightningError"'), 'Serialized error should include enhanced error type.');
         System.assert(actual.contains('"message":"msg1"'), 'Serialized error should include message.');
         actual = LightningError.create('msg2')
-                .addError('err1')
-                .addError('err2')
-                .addFieldError(Account.Name, 'field1')
-                .addFieldError(Account.Id, 'field2')
-                .serialize();
+            .addError('err1')
+            .addError('err2')
+            .addFieldError(Account.Name, 'field1')
+            .addFieldError(Account.Id, 'field2')
+            .serialize();
         System.assert(actual.contains('output'), 'Serialized error should include output.');
         System.assert(actual.contains('fieldErrors'), 'Serialized error should include field errors.');
         System.assert(actual.contains('"statusCode":400'), 'Serialized error should include status code.');
@@ -62,7 +62,10 @@ private class LightningErrorTest {
         System.assert(actual.contains('"message":"field2"'), 'Serialized error should include message');
         System.assert(actual.contains('"fieldName":"Id"'), 'Serialized error should include field name.');
         System.assert(actual.contains('"fieldLabel":"Account ID"'), 'Serialized error should include field label.');
-        System.assert(actual.contains('"errors":[{"message":"err1"},{"message":"err2"}]'), 'Serialized error should include array of messages.');
+        System.assert(
+            actual.contains('"errors":[{"message":"err1"},{"message":"err2"}]'),
+            'Serialized error should include array of messages.'
+        );
         System.assertNotEquals(null, LightningError.create(), 'Error should be created.');
     }
 }
