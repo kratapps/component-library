@@ -124,6 +124,7 @@ and we are planning to deserialize this JSON into UTC.
 processor.datetimeFieldsToReformat.add('dt');
 processor.datetimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSZ';
 processor.sourceTimeZone = TimeZone.getTimeZone('America/Los_Angeles');
+// UTC is default value for both source and target time zone.
 processor.targetTimeZone = TimeZone.getTimeZone('UTC');
 String originalJson = '{"dt":"2022-12-15 04:15:30"}';
 String result = processor.process(originalJson);
