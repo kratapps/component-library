@@ -14,7 +14,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 
 ## Specification
 
-## Fields
+### Fields
 
 | Field Name                  | Type               | Default       | Description                                                                                                    |
 | --------------------------- | ------------------ | ------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -30,14 +30,14 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 | sourceTimeZone              | TimeZone           | UTC time zone | Original datetime time zone.                                                                                   |
 | targetTimeZone              | TimeZone           | UTC time zone | Target datetime time zone.                                                                                     |
 
-## Constructors
+### Constructors
 
 | Params         | Description                         |
 | -------------- | ----------------------------------- |
 |                | The result JSON won't be prettified |
 | Boolean pretty | The result JSON will be prettified  |
 
-## Methods
+### Methods
 
 | Method  | Params            | Returns | Description                                |
 | ------- | ----------------- | ------- | ------------------------------------------ |
