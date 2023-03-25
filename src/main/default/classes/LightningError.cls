@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Serialize LightningError instance for the AuraHandledException
  * and in lwc use the processError function from errorHandler.js.
  *
- * https://kratapps.com/component-library
+ * https://kratapps.com/component-library/error-handler
  */
 public class LightningError {
     private static final String SOMETHING_WENT_WRONG_MESSAGE = 'Something went wrong';

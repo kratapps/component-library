@@ -20,13 +20,13 @@ whether toast or prompt should be shown.
 ### Exports
 
 | Name        | Arguments                                | Returns   | Description                                                        |
-|-------------|------------------------------------------|-----------|--------------------------------------------------------------------|
+| ----------- | ---------------------------------------- | --------- | ------------------------------------------------------------------ |
 | handleError | error: any, [config: ProcessErrorConfig] | undefined | Handle error and show either a toast or an error prompt to a user. |
 
 ### ProcessErrorConfig Type
 
 | Name            | Type             | Required | Default | Description                                                                 |
-|-----------------|------------------|----------|---------|-----------------------------------------------------------------------------|
+| --------------- | ---------------- | -------- | ------- | --------------------------------------------------------------------------- |
 | element         | LightningElement | yes      |         | Usually the 'this' component. Required to show toast/prompt.                |
 | showToast       | boolean          |          | true    | Show error toast.                                                           |
 | showPrompt      | boolean          |          |         | Show error prompt. Used to show more detail than toast.                     |
