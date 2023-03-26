@@ -9,10 +9,15 @@ Preprocess JSON.
 Deploy service with dependencies:
 
 ```text
-sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/classes/JsonPreprocessor.cls,src/main/default/classes/JsonPreprocessor.cls-meta.xml -u myOrg
+sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-library -p src/main/default/classes/JsonPreprocessor.cls,src/main/default/classes/JsonPreprocessor.cls-meta.xml,src/main/default/classes/JsonPreprocessorTest.cls,src/main/default/classes/JsonPreprocessorTest.cls-meta.xml -u myOrg
 ```
 
 ## Specification
+
+Components
+
+- [classes/JsonPreprocessor](https://github.com/kratapps/component-library/blob/main/src/main/default/classes/JsonPreprocessor.cls)
+- [classes/JsonPreprocessorTest](https://github.com/kratapps/component-library/blob/main/src/main/default/classes/JsonPreprocessorTest.cls)
 
 ### Fields
 

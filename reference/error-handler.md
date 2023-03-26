@@ -17,6 +17,11 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 Use `handleError` function to handle errors in a generic way. Pass config with the lightning element and optionally set
 whether toast or prompt should be shown.
 
+Components
+
+- [lwc/errorHandler](https://github.com/kratapps/component-library/blob/main/src/main/default/lwc/errorHandler)
+- [classes/LightningError](https://github.com/kratapps/component-library/blob/main/src/main/default/classes/LightningError.cls)
+
 ### Exports
 
 | Name        | Arguments                                | Returns   | Description                                                        |

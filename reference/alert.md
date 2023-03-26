@@ -16,10 +16,14 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 
 ## Specification
 
+Components
+
+- [lwc/alert](https://github.com/kratapps/component-library/blob/main/src/main/default/lwc/alert)
+
 ### Attributes
 
 | Name            | Type                             | Required | Default | Description                                        |
-|-----------------|----------------------------------|----------|---------|----------------------------------------------------|
+| --------------- | -------------------------------- | -------- | ------- | -------------------------------------------------- |
 | variant         | info / warning / error / offline |          | info    | Variant of the alert.                              |
 | closeable       | boolean                          |          | false   | If true, the alert can be closed by a user action. |
 | hidden          | boolean                          |          | false   | Show/hide the alert.                               |
