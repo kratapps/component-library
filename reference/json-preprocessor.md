@@ -25,7 +25,7 @@ sfdx kratapps:remote:source:deploy -s https://github.com/kratapps/component-libr
 | uncapitalizeFirstLetter     | Boolean            | false         | SomeKey => someKey                                                                                             |
 | sortMapFields               | Boolean            | true          | Sort JSON keys.                                                                                                |
 | replaceFieldNamesMap        | Map<String,String> |               | Map JSON keys to a different value. Can be used to change Apex reserved keyword fields before deserialization. |
-| datetimeFieldsToReformat    | Set<String>        |               | Collection of JSON keys holding datetime values to reformat.                                                   |
+| datetimeFieldsToReformat    | Set\<String>       |               | Collection of JSON keys holding datetime values to reformat.                                                   |
 | datetimeFormat              | String             |               | Datetime format used for datetimeFieldToReformat JSON fields.                                                  |
 | sourceTimeZone              | TimeZone           | UTC time zone | Original datetime time zone.                                                                                   |
 | targetTimeZone              | TimeZone           | UTC time zone | Target datetime time zone.                                                                                     |
