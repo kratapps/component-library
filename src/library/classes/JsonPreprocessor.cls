@@ -1,23 +1,17 @@
 /*
 BSD 3-Clause License
-
 Copyright (c) 2023, kratapps.com
 All rights reserved.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-
 1. Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
-
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
-
 3. Neither the name of the copyright holder nor the names of its
    contributors may be used to endorse or promote products derived from
    this software without specific prior written permission.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -58,7 +52,7 @@ public virtual inherited sharing class JsonPreprocessor {
     public TimeZone sourceTimeZone = TIME_ZONE_UTC; // original datetime time zone
     public TimeZone targetTimeZone = TIME_ZONE_UTC; // target datetime time zone
 
-    private JSONGenerator gen;
+    protected JSONGenerator gen;
 
     public JsonPreprocessor() {
         this(false);
@@ -79,32 +73,51 @@ public virtual inherited sharing class JsonPreprocessor {
     protected virtual void traverseObject(Object obj, String fieldName) {
         if (obj == null) {
             gen.writeNull();
-        } else if (obj instanceof Map<String, Object>) {
-            traverseMap((Map<String, Object>) obj);
-        } else if (obj instanceof List<Object>) {
-            traverseList((List<Object>) obj);
         } else if (obj instanceof String) {
-            String stringValue = (String) obj;
-            if (replaceEmptyStringsWithNull && String.isBlank(stringValue)) {
-                gen.writeNull();
-            } else if (fieldName != null && String.isNotBlank(stringValue) && datetimeFieldsToReformat.contains(fieldName)) {
-                gen.writeString(reformatDatetime(stringValue));
-            } else {
-                gen.writeString(stringValue);
-            }
+            traverseString((String) obj, fieldName);
+        } else if (obj instanceof Integer) {
+            traverseInteger((Integer) obj, fieldName);
+        } else if (obj instanceof Long) {
+            traverseLong((Long) obj, fieldName);
+        } else if (obj instanceof Map<String, Object>) {
+            traverseMap((Map<String, Object>) obj, fieldName);
+        } else if (obj instanceof List<Object>) {
+            traverseList((List<Object>) obj, fieldName);
         } else {
             gen.writeObject(obj);
         }
     }
 
-    protected virtual void traverseMap(Map<String, Object> obj) {
+    protected virtual void traverseString(String value, String fieldName) {
+        if (replaceEmptyStringsWithNull && String.isBlank(value)) {
+            gen.writeNull();
+        } else if (fieldName != null && String.isNotBlank(value) && datetimeFieldsToReformat.contains(fieldName)) {
+            gen.writeString(reformatDatetime(value));
+        } else {
+            gen.writeString(value);
+        }
+    }
+
+    protected virtual void traverseLong(Long value, String fieldName) {
+        if (fieldName != null && datetimeFieldsToReformat.contains(fieldName)) {
+            gen.writeString(reformatDatetime(Datetime.newInstance(value)));
+        } else {
+            gen.writeNumber(value);
+        }
+    }
+
+    protected virtual void traverseInteger(Long value, String fieldName) {
+        gen.writeNumber(value);
+    }
+
+    protected virtual void traverseMap(Map<String, Object> obj, String fieldName) {
         List<String> keys = new List<String>(obj.keySet());
         if (sortMapFields) {
             keys.sort();
         }
         gen.writeStartObject();
-        for (String fieldName : keys) {
-            traverseMapField(fieldName, obj.get(fieldName));
+        for (String name : keys) {
+            traverseMapField(name, obj.get(name));
         }
         gen.writeEndObject();
     }
@@ -131,12 +144,30 @@ public virtual inherited sharing class JsonPreprocessor {
         gen.writeFieldName(newFieldName);
     }
 
-    protected virtual void traverseList(List<Object> objects) {
+    protected virtual void traverseList(List<Object> objects, String fieldName) {
         gen.writeStartArray();
         for (Object obj : objects) {
             traverseObject(obj, null);
         }
         gen.writeEndArray();
+    }
+
+    protected String reformatDatetime(String dt) {
+        return reformatDatetime(Datetime.valueOfGmt(dt));
+    }
+
+    protected String reformatDatetime(Datetime dt) {
+        if (sourceTimeZone != TIME_ZONE_UTC) {
+            dt = convertDatetimeTimeZone(dt, sourceTimeZone, TIME_ZONE_UTC);
+        }
+        return dt.format(datetimeFormat, targetTimeZone.getID());
+    }
+
+    private Datetime convertDatetimeTimeZone(Datetime dt, TimeZone sourceTimeZone, TimeZone targetTimeZone) {
+        Integer sourceOffset = sourceTimeZone.getOffset(dt);
+        Integer targetOffset = targetTimeZone.getOffset(dt);
+        Integer correction = targetOffset - sourceOffset;
+        return dt.addSeconds(correction / 1000);
     }
 
     private String convertSnakeCaseToCamelCase(String value) {
@@ -152,20 +183,5 @@ public virtual inherited sharing class JsonPreprocessor {
             }
         }
         return newValue.uncapitalize();
-    }
-
-    private String reformatDatetime(String dt) {
-        Datetime dtValue = Datetime.valueOfGmt(dt);
-        if (sourceTimeZone != TIME_ZONE_UTC) {
-            dtValue = convertDatetimeTimeZone(dtValue, sourceTimeZone, TIME_ZONE_UTC);
-        }
-        return dtValue.format(datetimeFormat, targetTimeZone.getID());
-    }
-
-    private Datetime convertDatetimeTimeZone(Datetime dt, TimeZone sourceTimeZone, TimeZone targetTimeZone) {
-        Integer sourceOffset = sourceTimeZone.getOffset(dt);
-        Integer targetOffset = targetTimeZone.getOffset(dt);
-        Integer correction = targetOffset - sourceOffset;
-        return dt.addSeconds(correction / 1000);
     }
 }

@@ -39,3 +39,4 @@ $RECYCLE.BIN/
 .idea/
 *.iml
 IlluminatedCloud/
+package-lock.json
