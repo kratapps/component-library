@@ -128,6 +128,17 @@ private class JsonPreprocessorTest {
         System.Assert.areEqual(expected, result, 'Wrong JSON result.');
     }
 
+    @IsTest
+    static void testFieldNamesToRemove() {
+        JsonPreprocessor processor = new JsonPreprocessor();
+        processor.fieldNamesToRemove.add('number');
+        processor.sortMapFields = false;
+        String original = '{"size":2,"result":[{"number":  "ABC0001234","description":"desc1"},{"description":"", "number":  "ABC0004567"}]}';
+        String expected = '{"size":2,"result":[{"description":"desc1"},{"description":""}]}';
+        String result = processor.process(original);
+        System.Assert.areEqual(expected, result, 'Wrong JSON result.');
+    }
+
     private class SecondsDatetimePreprocessor extends JsonPreprocessor {
         protected override void traverseObject(Object obj, String fieldName) {
             if (fieldName != null && obj != null && obj instanceof Long && fieldName == 'dt') {
