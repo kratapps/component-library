@@ -45,6 +45,7 @@ public virtual inherited sharing class JsonPreprocessor {
     public Boolean uncapitalizeFirstLetter = false; // SomeKey => someKey
     public Boolean sortMapFields = true;
     public final Map<String, String> replaceFieldNamesMap = new Map<String, String>();
+    public final Set<String> fieldNamesToRemove = new Set<String>();
 
     // datetime object values config
     public final Set<String> datetimeFieldsToReformat = new Set<String>(); // datetime object fields to reformat
@@ -123,6 +124,9 @@ public virtual inherited sharing class JsonPreprocessor {
     }
 
     protected virtual void traverseMapField(String fieldName, Object fieldValue) {
+        if (fieldNamesToRemove.contains(fieldName)) {
+            return;
+        }
         String newFieldName = fieldName;
         if (snakeCaseToCamelCase && fieldName.contains('_')) {
             newFieldName = convertSnakeCaseToCamelCase(fieldName);

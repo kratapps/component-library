@@ -59,9 +59,8 @@ We would like to change the original JSON in two ways:
 ```apex
 JsonPreprocessor processor = new JsonPreprocessor();
 processor.snakeCaseToCamelCase = true;
-processor.replaceFieldNamesMap = new Map<String, String>{
-    'number' => 'number_x'
-};
+processor.replaceFieldNamesMap.put('number', 'number_x');
+
 String originalJson = '{"some_key":"myValue","number":150}';
 String processedJson = processor.process(originalJson);
 // {"someKey:"myValue","number_x":150}
@@ -109,7 +108,7 @@ String processedJson = processor.process(originalJson);
 // {"a":"myValue","b":"myValue2"}
 ```
 
-### Replace Field Names Map
+### Replace Fields By Name
 
 ```apex
 processor.replaceFieldNamesMap.put('number', 'ticketNumber');
@@ -117,6 +116,15 @@ processor.replaceFieldNamesMap.put('string', 'string_x');
 String originalJson = '{"number":150,"string":"myValue"}';
 String processedJson = processor.process(originalJson);
 // {"ticketNumber":150,"string_x":"myValue"}
+```
+
+### Remove Fields By Name
+
+```apex
+processor.fieldNamesToRemove.add('number');
+String originalJson = '{"size":2,"result":[{"number": "ABC0001234","description": "desc1"},{"description": "", "number": "ABC0004567"}]}';
+String processedJson = processor.process(originalJson);
+// {"size":2,"result":[{"description":"desc1"},{"description":""}]}
 ```
 
 ### Reformat Datetime Values
