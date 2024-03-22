@@ -31,13 +31,14 @@
  */
 
 /**
- * Spinner.
+ * @file Spinner.
  *
  * Wrap your component in the spinner component.
  * In JS import showSpinner and hideSpinner functions.
  *
  * @author  kratapps.com
  * @date    2020-11-25
+ * @see     https://docs.kratapps.com/component-library/spinner
  */
 import { LightningElement, api, track } from 'lwc';
 

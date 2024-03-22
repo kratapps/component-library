@@ -30,12 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * @author kratapps.com
+/**
+ * @file Prompt.
  *
- * DEPRECATED.
+ * @deprecated
+ *
  * Use the standard lightning-alert component:
  * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
+ *
+ * @author  kratapps.com
+ * @date    2020-11-25
  */
 import { LightningElement, api } from 'lwc';
 

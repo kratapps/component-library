@@ -29,6 +29,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/**
+ * @file Generic Error Handler.
+ *
+ * @author  kratapps.com
+ * @date    2021-10-31
+ * @see     https://docs.kratapps.com/component-library/error-handler
+ */
 import LightningAlert from 'lightning/alert';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -77,7 +85,7 @@ function formatError(e) {
     } else if (e instanceof Error) {
         formatted.title = e.message;
         formatted.stack = e.stack;
-    } else if (e.body) {
+    } else if (e?.body) {
         formatErrorWithBody(formatted, e);
     } else {
         // generic handling
