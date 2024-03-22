@@ -30,62 +30,63 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * @author kratapps.com
+/**
+ * @file Prompt.
  *
- * DEPRECATED.
+ * @deprecated
+ *
  * Use the standard lightning-alert component:
  * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
+ *
+ * @author  kratapps.com
+ * @date    2020-11-25
  */
-
-import { LightningElement, api } from "lwc";
+import { LightningElement, api } from 'lwc';
 
 const variantToTheme = {
-  error: "slds-theme_error",
-  info: "slds-theme_info",
-  offline: "slds-theme_offline",
-  warning: "slds-theme_warning"
+    error: 'slds-theme_error',
+    info: 'slds-theme_info',
+    offline: 'slds-theme_offline',
+    warning: 'slds-theme_warning'
 };
 
 export default class Prompt extends LightningElement {
-  @api title = "";
-  @api variant = "info"; // ["info" | "warning" | "error" | "offline"] default "info"
-  @api show = false;
-  @api disableClose = false;
-  @api buttons = [
-    {
-      eventName: "close",
-      label: "Got It",
-      value: "gotIt",
-      variant: "neutral"
+    @api title = '';
+    @api variant = 'info'; // ["info" | "warning" | "error" | "offline"] default "info"
+    @api show = false;
+    @api disableClose = false;
+    @api buttons = [
+        {
+            eventName: 'close',
+            label: 'Got It',
+            value: 'gotIt',
+            variant: 'neutral'
+        }
+    ];
+
+    get buttonItems() {
+        return this.buttons.map((it, idx) => ({
+            ...it,
+            classNames: `slds-button slds-button_${it.variant} ${idx === 0 ? '' : 'slds-p-left_x-small'}`
+        }));
     }
-  ];
 
-  get buttonItems() {
-    return this.buttons.map((it, idx) => ({
-      ...it,
-      classNames: `slds-button slds-button_${it.variant} ${
-        idx === 0 ? "" : "slds-p-left_x-small"
-      }`
-    }));
-  }
-
-  handleButtonClick(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    const { value } = event.currentTarget;
-    const item = this.buttonItems.find((it) => it.value === value);
-    if (item.eventName) {
-      this.dispatchEvent(new CustomEvent(item.eventName));
+    handleButtonClick(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        const { value } = event.currentTarget;
+        const item = this.buttonItems.find((it) => it.value === value);
+        if (item.eventName) {
+            this.dispatchEvent(new CustomEvent(item.eventName));
+        }
     }
-  }
 
-  handleCloseClick() {
-    this.dispatchEvent(new CustomEvent("close"));
-  }
+    handleCloseClick() {
+        this.dispatchEvent(new CustomEvent('close'));
+    }
 
-  get headerClasses() {
-    const theme = variantToTheme[this.variant];
-    return `slds-modal__header ${theme} slds-theme_alert-texture`;
-  }
+    get headerClasses() {
+        const theme = variantToTheme[this.variant];
+        return `slds-modal__header ${theme} slds-theme_alert-texture`;
+    }
 }

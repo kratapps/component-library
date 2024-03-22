@@ -30,106 +30,113 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import LightningAlert from "lightning/alert";
-import { ShowToastEvent } from "lightning/platformShowToastEvent";
+/**
+ * @file Generic Error Handler.
+ *
+ * @author  kratapps.com
+ * @date    2021-10-31
+ * @see     https://docs.kratapps.com/component-library/error-handler
+ */
+import LightningAlert from 'lightning/alert';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 function formatErrorWithBody(formatted, e) {
-  let body;
-  try {
-    body = JSON.parse(e.body?.message);
-  } catch (ignored) {
-    body = e.body;
-  }
-  formatted.title = body.message;
-  if (body.output) {
-    const { errors, fieldErrors } = body.output;
-    formatted.message = "";
-    if (errors) {
-      for (const outputError of errors) {
-        formatted.message += outputError.message;
-        if (outputError.fieldLabel) {
-          formatted.message += ` [${outputError.fieldLabel}]`;
-        }
-        formatted.message += "\n";
-      }
+    let body;
+    try {
+        body = JSON.parse(e.body?.message);
+    } catch (ignored) {
+        body = e.body;
     }
-    if (fieldErrors) {
-      for (const outputFieldErrors of Object.values(fieldErrors)) {
-        for (const outputFieldError of outputFieldErrors) {
-          formatted.message += outputFieldError.message;
-          if (outputFieldError.fieldLabel) {
-            formatted.message += ` [${outputFieldError.fieldLabel}]`;
-          }
-          formatted.message += "\n";
+    formatted.title = body.message;
+    if (body.output) {
+        const { errors, fieldErrors } = body.output;
+        formatted.message = '';
+        if (errors) {
+            for (const outputError of errors) {
+                formatted.message += outputError.message;
+                if (outputError.fieldLabel) {
+                    formatted.message += ` [${outputError.fieldLabel}]`;
+                }
+                formatted.message += '\n';
+            }
         }
-      }
+        if (fieldErrors) {
+            for (const outputFieldErrors of Object.values(fieldErrors)) {
+                for (const outputFieldError of outputFieldErrors) {
+                    formatted.message += outputFieldError.message;
+                    if (outputFieldError.fieldLabel) {
+                        formatted.message += ` [${outputFieldError.fieldLabel}]`;
+                    }
+                    formatted.message += '\n';
+                }
+            }
+        }
     }
-  }
 }
 
 function formatError(e) {
-  const formatted = {
-    message: undefined,
-    stack: undefined,
-    title: undefined
-  };
-  if (e instanceof String || typeof e === "string") {
-    formatted.title = e;
-  } else if (e instanceof Error) {
-    formatted.title = e.message;
-    formatted.stack = e.stack;
-  } else if (e.body) {
-    formatErrorWithBody(formatted, e);
-  } else {
-    // generic handling
-    formatted.title = "Something Went Wrong";
-    formatted.message = JSON.stringify(e);
-  }
-  return formatted;
+    const formatted = {
+        message: undefined,
+        stack: undefined,
+        title: undefined
+    };
+    if (e instanceof String || typeof e === 'string') {
+        formatted.title = e;
+    } else if (e instanceof Error) {
+        formatted.title = e.message;
+        formatted.stack = e.stack;
+    } else if (e?.body) {
+        formatErrorWithBody(formatted, e);
+    } else {
+        // generic handling
+        formatted.title = 'Something Went Wrong';
+        formatted.message = JSON.stringify(e);
+    }
+    return formatted;
 }
 
 function debounceFun(fn, delay = 1000) {
-  let timer = null;
-  return function () {
-    // eslint-disable-next-line no-invalid-this
-    let context = this,
-      args = arguments;
-    clearTimeout(timer);
-    // eslint-disable-next-line @lwc/lwc/no-async-operation
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
+    let timer = null;
+    return function () {
+        // eslint-disable-next-line no-invalid-this
+        let context = this,
+            args = arguments;
+        clearTimeout(timer);
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        timer = setTimeout(function () {
+            fn.apply(context, args);
+        }, delay);
+    };
 }
 
 const debouncedShowToastEvent = debounceFun(showToastEvent);
 const debouncedShowErrorPrompt = debounceFun(showErrorPrompt);
 
 function showToastEvent(element, title, message, debounce) {
-  if (debounce) {
-    debouncedShowToastEvent(element, title, message, false);
-  } else {
-    element.dispatchEvent(
-      new ShowToastEvent({
-        message,
-        mode: "sticky",
-        title,
-        variant: "error"
-      })
-    );
-  }
+    if (debounce) {
+        debouncedShowToastEvent(element, title, message, false);
+    } else {
+        element.dispatchEvent(
+            new ShowToastEvent({
+                message,
+                mode: 'sticky',
+                title,
+                variant: 'error'
+            })
+        );
+    }
 }
 
 async function showErrorPrompt(title, message, debounce) {
-  if (debounce) {
-    debouncedShowErrorPrompt(title, message, false);
-  } else {
-    await LightningAlert.open({
-      label: title,
-      message: message,
-      theme: "error"
-    });
-  }
+    if (debounce) {
+        debouncedShowErrorPrompt(title, message, false);
+    } else {
+        await LightningAlert.open({
+            label: title,
+            message: message,
+            theme: 'error'
+        });
+    }
 }
 
 /**
@@ -148,16 +155,16 @@ async function showErrorPrompt(title, message, debounce) {
  * @param {ProcessErrorConfig} config
  */
 export async function handleError(error, config = {}) {
-  const formatted = formatError(error);
-  // eslint-disable-next-line no-console
-  console.error({ config, error, formatted });
-  let { element, showToast, showPrompt, disableDebounce = false } = config;
-  const debounce = !disableDebounce;
-  const { title, message } = formatted;
+    const formatted = formatError(error);
+    // eslint-disable-next-line no-console
+    console.error({ config, error, formatted });
+    let { element, showToast, showPrompt, disableDebounce = false } = config;
+    const debounce = !disableDebounce;
+    const { title, message } = formatted;
 
-  if (element && (showToast || !showPrompt)) {
-    showToastEvent(element, title, message, debounce);
-  } else if (element && showPrompt) {
-    await showErrorPrompt(title, message, debounce);
-  }
+    if (element && (showToast || !showPrompt)) {
+        showToastEvent(element, title, message, debounce);
+    } else if (element && showPrompt) {
+        await showErrorPrompt(title, message, debounce);
+    }
 }

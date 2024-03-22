@@ -30,27 +30,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * @author kratapps.com
+/**
+ * @file Prompt.
  *
- * DEPRECATED.
+ * @deprecated
+ *
  * Use the standard lightning-alert component:
  * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
+ *
+ * @author  kratapps.com
+ * @date    2020-11-25
  */
-
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api, track } from 'lwc';
 
 export default class ErrorHandlerPrompt extends LightningElement {
-  @api title;
-  @api message;
-  @track _show = false;
+    @api title;
+    @api message;
+    @track _show = false;
 
-  @api
-  show() {
-    this._show = true;
-  }
+    @api
+    show() {
+        this._show = true;
+    }
 
-  handleCloseClick() {
-    this._show = false;
-  }
+    handleCloseClick() {
+        this._show = false;
+    }
 }
