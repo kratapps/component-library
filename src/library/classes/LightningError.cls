@@ -116,6 +116,10 @@ public class LightningError {
         return serialize(message, errors, fieldErrors);
     }
 
+    public AuraHandledException toAuraHandledException() {
+        return new AuraHandledException(serialize(message, errors, fieldErrors));
+    }
+
     private LightningError addFieldError(LightningError.FieldError e) {
         if (!fieldErrors.containsKey(e.fieldName)) {
             fieldErrors.put(e.fieldName, new List<LightningError.FieldError>());
