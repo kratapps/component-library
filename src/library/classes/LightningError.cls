@@ -117,7 +117,7 @@ public class LightningError {
     }
 
     public AuraHandledException toAuraHandledException() {
-        return new AuraHandledException(serialize(message, errors, fieldErrors));
+        return new AuraHandledException(serialize());
     }
 
     private LightningError addFieldError(LightningError.FieldError e) {
