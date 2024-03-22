@@ -37,20 +37,19 @@
  * Use the standard lightning-alert component:
  * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
  */
-
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api, track } from 'lwc';
 
 export default class ErrorHandlerPrompt extends LightningElement {
-  @api title;
-  @api message;
-  @track _show = false;
+    @api title;
+    @api message;
+    @track _show = false;
 
-  @api
-  show() {
-    this._show = true;
-  }
+    @api
+    show() {
+        this._show = true;
+    }
 
-  handleCloseClick() {
-    this._show = false;
-  }
+    handleCloseClick() {
+        this._show = false;
+    }
 }

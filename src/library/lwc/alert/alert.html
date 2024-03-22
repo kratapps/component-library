@@ -3,12 +3,7 @@
         <div class={alertClasses} role="alert">
             <span class="slds-assistive-text">{variantLabel}</span>
             <span class={containerClasses} title={iconDescription}>
-                <lightning-icon
-                    icon-name={iconName}
-                    alternative-text={variantLabel}
-                    title={variantLabel}
-                    size="x-small"
-                ></lightning-icon>
+                <lightning-icon icon-name={iconName} alternative-text={variantLabel} title={variantLabel} size="x-small"></lightning-icon>
             </span>
             <h2>
                 <slot></slot>
