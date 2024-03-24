@@ -46,7 +46,7 @@ const debouncedShowToastEvent = debouncedFn(showToastEvent);
 const debouncedShowErrorModal = debouncedFn(showErrorModal);
 
 /**
- * @typedef {Object} ProcessErrorConfig
+ * @typedef {Object} ErrorHandlerOptions
  * @property {LightningElement} element - Usually the 'this' component. Required to show toast/prompt.
  * @property {boolean | undefined} [showModal] - Default. Show error modal. Used to show more detail than toast.
  * @property {boolean | undefined} [showPrompt] - Alias for showModal.
@@ -67,22 +67,22 @@ const debouncedShowErrorModal = debouncedFn(showErrorModal);
  * Handle errors in a generic way.
  *
  * @param {any} error
- * @param {ProcessErrorConfig | LightningElement | undefined} config
+ * @param {LightningElement | ErrorHandlerOptions | undefined} options
  */
-export async function handleError(error, config) {
+export async function handleError(error, options) {
     let element;
     let showToast;
     let showModal;
     let disableDebounce;
     let actions;
-    if (config && config instanceof LightningElement) {
-        element = config;
-    } else if (config) {
-        element = config.element;
-        showToast = config.showToast;
-        showModal = config.showPrompt ?? config.showModal;
-        disableDebounce = config.disableDebounce;
-        actions = config.actions;
+    if (options && options instanceof LightningElement) {
+        element = options;
+    } else if (options) {
+        element = options.element;
+        showToast = options.showToast;
+        showModal = options.showPrompt ?? options.showModal;
+        disableDebounce = options.disableDebounce;
+        actions = options.actions;
     }
     const formatted = formatError(error, element);
     // eslint-disable-next-line no-console
@@ -97,7 +97,7 @@ export async function handleError(error, config) {
 }
 
 /**
- * @typedef {Object} CustomErrorHandlerConfig
+ * @typedef {Object} CustomErrorHandlerOptions
  * @property {ErrorHandlerAction[]} [actions] - List of error handler footer action buttons.
  */
 
@@ -105,20 +105,20 @@ export async function handleError(error, config) {
  * Create custom error handler.
  * Option to override actions.
  *
- * @param {CustomErrorHandlerConfig} config
+ * @param {CustomErrorHandlerOptions} options
  */
 export function createCustomErrorHandler({ actions = standardActions }) {
     return {
         /**
          * @param {any} error
-         * @param {ProcessErrorConfig} config
+         * @param {ErrorHandlerOptions} options
          */
-        handleError: (error, config) => {
-            const fullConfig =
-                config && config instanceof LightningElement
-                    ? Object.assign({ element: config }, { actions })
-                    : Object.assign({}, config ?? {}, { actions });
-            return handleError(error, fullConfig);
+        handleError: (error, options) => {
+            const fullOptions =
+                options && options instanceof LightningElement
+                    ? Object.assign({ element: options }, { actions })
+                    : Object.assign({}, options ?? {}, { actions });
+            return handleError(error, fullOptions);
         }
     };
 }
