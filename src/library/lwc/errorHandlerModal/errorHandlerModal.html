@@ -1,0 +1,18 @@
+<template>
+    <div class="slds-modal__header slds-theme_alert-texture slds-theme_error">
+        <h1 class="slds-text-heading_medium">{label}</h1>
+    </div>
+    <lightning-modal-body>{message}</lightning-modal-body>
+    <lightning-modal-footer>
+        <template for:each={allActions} for:item="action">
+            <lightning-button
+                class="slds-m-left_small"
+                key={action.name}
+                label={action.label}
+                variant={action.variant}
+                name={action.name}
+                onclick={handleActionClick}
+            ></lightning-button>
+        </template>
+    </lightning-modal-footer>
+</template>

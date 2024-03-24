@@ -34,51 +34,131 @@
  * @file Generic Error Handler.
  *
  * @author  kratapps.com
- * @date    2021-10-31
  * @see     https://docs.kratapps.com/component-library/error-handler
  */
-import LightningAlert from 'lightning/alert';
+import { LightningElement } from 'lwc';
+
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-function formatErrorWithBody(formatted, e) {
-    let body;
-    try {
-        body = JSON.parse(e.body?.message);
-    } catch (ignored) {
-        body = e.body;
+import ErrorHandlerModal, { standardActions } from 'c/errorHandlerModal';
+
+const debouncedShowToastEvent = debouncedFn(showToastEvent);
+const debouncedShowErrorModal = debouncedFn(showErrorModal);
+
+/**
+ * @typedef {Object} ProcessErrorConfig
+ * @property {LightningElement} element - Usually the 'this' component. Required to show toast/prompt.
+ * @property {boolean | undefined} [showModal] - Default. Show error modal. Used to show more detail than toast.
+ * @property {boolean | undefined} [showPrompt] - Alias for showModal.
+ * @property {boolean | undefined} [showToast] - Show error toast.
+ * @property {boolean | undefined} [disableDebounce] - By default, show only one error if multiple errors handled within a second. Set to true to disable debouncing.
+ * @property {ErrorHandlerAction[] | undefined} [actions] - List of error handler footer action buttons.
+ */
+
+/**
+ * @typedef {Object} ErrorHandlerAction
+ * @property {string} name - The name for the button element.
+ * @property {string} label - The text to be displayed inside the button.
+ * @property {string} variant - The variant changes the appearance of the button.
+ * @property {Function | undefined} onclick - The function to be executed when the action is clicked.
+ */
+
+/**
+ * Handle errors in a generic way.
+ *
+ * @param {any} error
+ * @param {ProcessErrorConfig | LightningElement | undefined} config
+ */
+export async function handleError(error, config) {
+    let element;
+    let showToast;
+    let showModal;
+    let disableDebounce;
+    let actions;
+    if (config && config instanceof LightningElement) {
+        element = config;
+    } else if (config) {
+        element = config.element;
+        showToast = config.showToast;
+        showModal = config.showPrompt ?? config.showModal;
+        disableDebounce = config.disableDebounce;
+        actions = config.actions;
     }
-    formatted.title = body.message;
-    if (body.output) {
-        const { errors, fieldErrors } = body.output;
-        formatted.message = '';
-        if (errors) {
-            for (const outputError of errors) {
-                formatted.message += outputError.message;
-                if (outputError.fieldLabel) {
-                    formatted.message += ` [${outputError.fieldLabel}]`;
-                }
-                formatted.message += '\n';
-            }
-        }
-        if (fieldErrors) {
-            for (const outputFieldErrors of Object.values(fieldErrors)) {
-                for (const outputFieldError of outputFieldErrors) {
-                    formatted.message += outputFieldError.message;
-                    if (outputFieldError.fieldLabel) {
-                        formatted.message += ` [${outputFieldError.fieldLabel}]`;
-                    }
-                    formatted.message += '\n';
-                }
-            }
-        }
+    const formatted = formatError(error, element);
+    // eslint-disable-next-line no-console
+    console.error(JSON.stringify({ error, formatted }, null, 2));
+    const debounce = !disableDebounce;
+    const { title, message } = formatted;
+    if (showModal || !showToast) {
+        await showErrorModal({ title, message, debounce, actions });
+    } else {
+        showToastEvent({ element, title, message, debounce });
     }
 }
 
-function formatError(e) {
+/**
+ * @typedef {Object} CustomErrorHandlerConfig
+ * @property {ErrorHandlerAction[]} [actions] - List of error handler footer action buttons.
+ */
+
+/**
+ * Create custom error handler.
+ * Option to override actions.
+ *
+ * @param {CustomErrorHandlerConfig} config
+ */
+export function createCustomErrorHandler({ actions = standardActions }) {
+    return {
+        /**
+         * @param {any} error
+         * @param {ProcessErrorConfig} config
+         */
+        handleError: (error, config) => {
+            const fullConfig =
+                config && config instanceof LightningElement
+                    ? Object.assign({ element: config }, { actions })
+                    : Object.assign({}, config ?? {}, { actions });
+            return handleError(error, fullConfig);
+        }
+    };
+}
+
+async function showErrorModal({ title, message, debounce, actions }) {
+    if (debounce) {
+        debouncedShowErrorModal({ title, message, debounce: false, actions });
+    } else {
+        await ErrorHandlerModal.open({
+            label: title,
+            message,
+            size: 'small',
+            actions
+        });
+    }
+}
+
+function showToastEvent({ element, title, message, debounce }) {
+    if (debounce) {
+        debouncedShowToastEvent({ element, title, message, debounce: false });
+    } else {
+        dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                mode: 'sticky',
+                variant: 'error'
+            })
+        );
+    }
+}
+
+function formatError(e, element) {
     const formatted = {
+        title: 'Something went wrong.',
         message: undefined,
         stack: undefined,
-        title: undefined
+        source: {
+            localName: element?.template?.host?.localName
+        }
     };
     if (e instanceof String || typeof e === 'string') {
         formatted.title = e;
@@ -89,13 +169,49 @@ function formatError(e) {
         formatErrorWithBody(formatted, e);
     } else {
         // generic handling
-        formatted.title = 'Something Went Wrong';
-        formatted.message = JSON.stringify(e);
+        formatted.title = 'Something went wrong.';
+        // formatted.message = JSON.stringify(e);
     }
     return formatted;
 }
 
-function debounceFun(fn, delay = 1000) {
+function formatErrorWithBody(formatted, e) {
+    let body;
+    try {
+        body = JSON.parse(e.body?.message);
+    } catch (ignored) {
+        body = e.body;
+    }
+    formatted.title = body.message;
+    if (body.output && typeof body.output === 'object') {
+        const { errors, fieldErrors } = body.output;
+        formatted.message = '';
+        if (errors && Array.isArray(errors)) {
+            for (const { message, fieldLabel } of errors) {
+                formatted.message += message;
+                if (fieldLabel) {
+                    formatted.message += ` [${fieldLabel}]`;
+                }
+                formatted.message += '\n';
+            }
+        }
+        if (fieldErrors && Array.isArray(fieldErrors)) {
+            for (const outputFieldErrors of Object.values(fieldErrors)) {
+                if (outputFieldErrors && Array.isArray(outputFieldErrors)) {
+                    for (const { message, fieldLabel } of outputFieldErrors) {
+                        formatted.message += message;
+                        if (fieldLabel) {
+                            formatted.message += ` [${fieldLabel}]`;
+                        }
+                        formatted.message += '\n';
+                    }
+                }
+            }
+        }
+    }
+}
+
+function debouncedFn(fn, delay = 1000) {
     let timer = null;
     return function () {
         // eslint-disable-next-line no-invalid-this
@@ -107,64 +223,4 @@ function debounceFun(fn, delay = 1000) {
             fn.apply(context, args);
         }, delay);
     };
-}
-
-const debouncedShowToastEvent = debounceFun(showToastEvent);
-const debouncedShowErrorPrompt = debounceFun(showErrorPrompt);
-
-function showToastEvent(element, title, message, debounce) {
-    if (debounce) {
-        debouncedShowToastEvent(element, title, message, false);
-    } else {
-        element.dispatchEvent(
-            new ShowToastEvent({
-                message,
-                mode: 'sticky',
-                title,
-                variant: 'error'
-            })
-        );
-    }
-}
-
-async function showErrorPrompt(title, message, debounce) {
-    if (debounce) {
-        debouncedShowErrorPrompt(title, message, false);
-    } else {
-        await LightningAlert.open({
-            label: title,
-            message: message,
-            theme: 'error'
-        });
-    }
-}
-
-/**
- * @typedef {Object} ProcessErrorConfig
- * @property {LightningElement} element - Usually the 'this' component. Required to show toast/prompt.
- * @property {boolean} [showToast] - Show error toast.
- * @property {boolean} [showPrompt] - Show error prompt. Used to show more detail than toast.
- * @property {boolean} [disableDebounce] - By default, show only one error if multiple errors handled within a second.
- * Set to true to disable debouncing.
- */
-
-/**
- * Handle errors in a generic way.
- *
- * @param {any} error
- * @param {ProcessErrorConfig} config
- */
-export async function handleError(error, config = {}) {
-    const formatted = formatError(error);
-    // eslint-disable-next-line no-console
-    console.error({ config, error, formatted });
-    let { element, showToast, showPrompt, disableDebounce = false } = config;
-    const debounce = !disableDebounce;
-    const { title, message } = formatted;
-
-    if (element && (showToast || !showPrompt)) {
-        showToastEvent(element, title, message, debounce);
-    } else if (element && showPrompt) {
-        await showErrorPrompt(title, message, debounce);
-    }
 }

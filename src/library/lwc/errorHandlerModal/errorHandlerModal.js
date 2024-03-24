@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, kratapps.com
+ * Copyright (c) 2024, kratapps.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,29 +31,34 @@
  */
 
 /**
- * @file Prompt.
- *
- * @deprecated
- *
- * Use the standard lightning-alert component:
- * https://developer.salesforce.com/docs/component-library/bundle/lightning-alert/documentation
+ * @file Modal for Error Handler.
  *
  * @author  kratapps.com
- * @date    2020-11-25
+ * @see     https://docs.kratapps.com/component-library/error-handler
  */
-import { LightningElement, api, track } from 'lwc';
+import { api } from 'lwc';
 
-export default class ErrorHandlerPrompt extends LightningElement {
-    @api title;
+import LightningModal from 'lightning/modal';
+
+/**
+ * @type {ErrorHandlerAction[]}
+ */
+export const standardActions = [{ label: 'Close', variant: 'brand', name: 'close' }];
+
+export default class ErrorHandlerModal extends LightningModal {
+    @api label = 'Something went wrong.';
     @api message;
-    @track _show = false;
+    @api actions;
 
-    @api
-    show() {
-        this._show = true;
+    get allActions() {
+        return this.actions ?? standardActions;
     }
 
-    handleCloseClick() {
-        this._show = false;
+    handleActionClick(event) {
+        const action = this.allActions.find((it) => it.name === event.target.name);
+        if (action.onclick) {
+            action.onclick();
+        }
+        this.close(action.name);
     }
 }

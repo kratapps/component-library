@@ -2,8 +2,8 @@ alias=lib
 alias_packaging=kratapps-prod
 
 scratch-org:
-	sfdx force:org:create -s -a ${alias} -f config/project-scratch-def.json -d 30
-	sfdx force:source:push -u ${alias}
+	sf org create scratch -a ${alias} -f config/project-scratch-def.json --duration-days 30
+	sf project deploy start -o ${alias}
 
 unit-test:
 	sfdx force:apex:test:run -u ${alias} --codecoverage --testlevel RunLocalTests --resultformat human

@@ -34,7 +34,6 @@
  * @file Wrapper for slds alert.
  *
  * @author  kratapps.com
- * @date    2021-10-31
  * @see     https://docs.kratapps.com/component-library/alert
  */
 import { LightningElement, api } from 'lwc';
