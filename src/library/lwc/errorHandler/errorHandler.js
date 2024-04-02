@@ -2,57 +2,40 @@
  * BSD 3-Clause License
  *
  * Copyright (c) 2022, kratapps.com
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * See the LICENSE: https://github.com/kratapps/component-library/blob/main/LICENSE
  */
 
 /**
- * @file Generic Error Handler.
+ * @file    Generic Error Handler.
+ *
+ * @link    https://docs.kratapps.com/component-library/error-handler
  *
  * @author  kratapps.com
- * @see     https://docs.kratapps.com/component-library/error-handler
  */
 import { LightningElement } from 'lwc';
 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import ErrorHandlerModal, { standardActions } from 'c/errorHandlerModal';
+import ErrorHandlerModal from 'c/errorHandlerModal';
 
-const debouncedShowToastEvent = debouncedFn(showToastEvent);
-const debouncedShowErrorModal = debouncedFn(showErrorModal);
+const debouncedShowToastEvent = debounced(showToastEvent);
+const debouncedShowErrorModal = debounced(showErrorModal);
+
+let somethingWentWrongLabel = 'Something went wrong.';
+try {
+    somethingWentWrongLabel = require('@salesforce/label/SomethingWentWrong');
+} catch (ignored) {
+    // Label probably does not exist.
+}
 
 /**
  * @typedef {Object} ErrorHandlerOptions
- * @property {LightningElement} element - Usually the 'this' component. Required to show toast/prompt.
- * @property {boolean | undefined} [showModal] - Default. Show error modal. Used to show more detail than toast.
- * @property {boolean | undefined} [showPrompt] - Alias for showModal.
- * @property {boolean | undefined} [showToast] - Show error toast.
+ * @property {LightningElement | undefined} element - Usually the 'this' component. Required to show toast/prompt.
+ * @property {'modal' | 'toast' | string | undefined} [type] - Default is 'modal' for 'somethingWentWrong' and 'toast' for 'handleError'.
  * @property {boolean | undefined} [disableDebounce] - By default, show only one error if multiple errors handled within a second. Set to true to disable debouncing.
+ * @property {string | undefined} [somethingWentWrongMessage] - Generic message to show when unexpected error is handled. Default: "Something went wrong.".
  * @property {ErrorHandlerAction[] | undefined} [actions] - List of error handler footer action buttons.
+ * @property {Logger | undefined} [logger] - Logger. Default logger only prints to console. Use custom logger to persist logs.
  */
 
 /**
@@ -64,86 +47,122 @@ const debouncedShowErrorModal = debouncedFn(showErrorModal);
  */
 
 /**
- * Handle errors in a generic way.
+ * @typedef {Object} Logger
+ * @property {({error: any, ui: UiError}) => void} log - Function to log errors.
+ */
+
+/**
+ * Handle error, show error modal or toast.
+ * Show error details to user. Use for expected errors.
+ * Toast is the default error component.
+ * Use 'somethingWentWrong' function for unexpected errors instead.
  *
  * @param {any} error
  * @param {LightningElement | ErrorHandlerOptions | undefined} options
  */
 export async function handleError(error, options) {
-    let element;
-    let showToast;
-    let showModal;
-    let disableDebounce;
-    let actions;
-    if (options && options instanceof LightningElement) {
-        element = options;
-    } else if (options) {
-        element = options.element;
-        showToast = options.showToast;
-        showModal = options.showPrompt ?? options.showModal;
-        disableDebounce = options.disableDebounce;
-        actions = options.actions;
-    }
-    const formatted = formatError(error, element);
-    // eslint-disable-next-line no-console
-    console.error(JSON.stringify({ error, formatted }, null, 2));
+    const {
+        element,
+        type,
+        disableDebounce,
+        actions,
+        somethingWentWrongMessage = somethingWentWrongLabel,
+        logger = consoleLogger
+    } = mergeErrorHandlerOptions({}, options);
+    const ui = formatError(error, element, false, somethingWentWrongMessage);
+    logger?.log({ error, ui });
     const debounce = !disableDebounce;
-    const { title, message } = formatted;
-    if (showModal || !showToast) {
-        await showErrorModal({ title, message, debounce, actions });
+    const { message, payload, fieldErrors } = ui;
+    if (type === 'modal' || (type !== 'toast' && (payload || fieldErrors?.length))) {
+        await showErrorModal({ title: message, payload, fieldErrors, debounce, actions });
     } else {
-        showToastEvent({ element, title, message, debounce });
+        showToastEvent({ element, title: message, payload, debounce });
+    }
+}
+
+/**
+ * Handle unexpected error, show error modal or toast with generic Something went wrong message.
+ * Modal is the default error component.
+ * Hides technical details from user.
+ *
+ * @param {any} error
+ * @param {LightningElement | ErrorHandlerOptions | undefined} options
+ */
+export async function somethingWentWrong(error, options) {
+    const {
+        element,
+        type,
+        disableDebounce,
+        actions,
+        somethingWentWrongMessage = somethingWentWrongLabel,
+        logger = consoleLogger
+    } = mergeErrorHandlerOptions({}, options);
+    const ui = formatError(error, element, true, somethingWentWrongMessage);
+    logger?.log({ error, ui });
+    const debounce = !disableDebounce;
+    const { message, payload, fieldErrors } = ui;
+    if (type === 'toast') {
+        showToastEvent({ element, title: message, payload, debounce });
+    } else {
+        await showErrorModal({ title: message, payload, fieldErrors, debounce, actions });
     }
 }
 
 /**
  * @typedef {Object} CustomErrorHandlerOptions
- * @property {ErrorHandlerAction[]} [actions] - List of error handler footer action buttons.
+ * @property {ErrorHandlerAction[] | undefined} [actions] - List of error handler footer action buttons.
+ * @property {string | undefined} [somethingWentWrongMessage] - Generic message to show when unexpected error is handled. Default: "Something went wrong.".
+ * @property {Logger | undefined} [logger] - Custom logger.
  */
 
 /**
  * Create custom error handler.
  * Option to override actions.
  *
- * @param {CustomErrorHandlerOptions} options
+ * @param {CustomErrorHandlerOptions} customOptions
  */
-export function createCustomErrorHandler({ actions = standardActions }) {
+export function createCustomErrorHandler(customOptions) {
+    const customOptionsCopy = { ...customOptions };
     return {
         /**
          * @param {any} error
-         * @param {ErrorHandlerOptions} options
+         * @param {LightningElement | ErrorHandlerOptions | undefined} options
          */
         handleError: (error, options) => {
-            const fullOptions =
-                options && options instanceof LightningElement
-                    ? Object.assign({ element: options }, { actions })
-                    : Object.assign({}, options ?? {}, { actions });
-            return handleError(error, fullOptions);
+            return handleError(error, mergeErrorHandlerOptions(customOptionsCopy, options));
+        },
+        /**
+         * @param {any} error
+         * @param {LightningElement | ErrorHandlerOptions | undefined} options
+         */
+        somethingWentWrong: (error, options) => {
+            return somethingWentWrong(error, mergeErrorHandlerOptions(customOptionsCopy, options));
         }
     };
 }
 
-async function showErrorModal({ title, message, debounce, actions }) {
+async function showErrorModal({ title, payload, fieldErrors, debounce, actions }) {
     if (debounce) {
-        debouncedShowErrorModal({ title, message, debounce: false, actions });
+        debouncedShowErrorModal({ title, payload, fieldErrors, debounce: false, actions });
     } else {
         await ErrorHandlerModal.open({
             label: title,
-            message,
+            message: payload,
+            fieldErrors: fieldErrors,
             size: 'small',
             actions
         });
     }
 }
 
-function showToastEvent({ element, title, message, debounce }) {
+function showToastEvent({ element, title, payload, debounce }) {
     if (debounce) {
-        debouncedShowToastEvent({ element, title, message, debounce: false });
+        debouncedShowToastEvent({ element, title, payload, debounce: false });
     } else {
         dispatchEvent(
             new ShowToastEvent({
-                title: title,
-                message: message,
+                title,
+                message: payload,
                 mode: 'sticky',
                 variant: 'error'
             })
@@ -151,67 +170,120 @@ function showToastEvent({ element, title, message, debounce }) {
     }
 }
 
-function formatError(e, element) {
-    const formatted = {
-        title: 'Something went wrong.',
-        message: undefined,
+/**
+ * @typedef {Object} UiError
+ * @property {string} [message]
+ * @property {string | undefined} [payload]
+ * @property {string | undefined} [stack]
+ * @property {string | undefined} [hostName]
+ */
+
+/**
+ * @param {any} e
+ * @param {LightningElement | undefined} element
+ * @param {boolean} isSomethingWentWrong
+ * @param {string} somethingWentWrongMessage
+ * @return {UiError}
+ */
+function formatError(e, element, isSomethingWentWrong, somethingWentWrongMessage) {
+    const ui = {
+        message: somethingWentWrongMessage,
+        payload: undefined,
         stack: undefined,
-        source: {
-            localName: element?.template?.host?.localName
-        }
+        hostName: element?.template?.host?.localName,
+        fieldErrors: [],
+        handlerMethod: isSomethingWentWrong ? 'somethingWentWrong' : 'handleError'
     };
-    if (e instanceof String || typeof e === 'string') {
-        formatted.title = e;
+    if (isSomethingWentWrong) {
+        if (e?.body) {
+            formatErrorWithBody(ui, e, somethingWentWrongMessage);
+        }
+    } else if (e instanceof String || typeof e === 'string') {
+        ui.message = e;
     } else if (e instanceof Error) {
-        formatted.title = e.message;
-        formatted.stack = e.stack;
+        ui.message = e.message;
+        ui.stack = e.stack;
     } else if (e?.body) {
-        formatErrorWithBody(formatted, e);
+        formatErrorWithBody(ui, e, somethingWentWrongMessage);
     } else {
         // generic handling
-        formatted.title = 'Something went wrong.';
-        // formatted.message = JSON.stringify(e);
+        ui.message = somethingWentWrongMessage;
+        ui.payload = JSON.stringify(e);
     }
-    return formatted;
+    return ui;
 }
 
-function formatErrorWithBody(formatted, e) {
+function formatErrorWithBody(ui, e, somethingWentWrongMessage) {
     let body;
     try {
         body = JSON.parse(e.body?.message);
     } catch (ignored) {
         body = e.body;
     }
-    formatted.title = body.message;
-    if (body.output && typeof body.output === 'object') {
-        const { errors, fieldErrors } = body.output;
-        formatted.message = '';
-        if (errors && Array.isArray(errors)) {
-            for (const { message, fieldLabel } of errors) {
-                formatted.message += message;
-                if (fieldLabel) {
-                    formatted.message += ` [${fieldLabel}]`;
-                }
-                formatted.message += '\n';
+    if (body.message) {
+        ui.message = body.message;
+    }
+    if (Array.isArray(body?.output?.errors)) {
+        ui.payload = ui.payload ?? '';
+        for (const { message, fieldLabel, errorCode } of body.output.errors) {
+            let prettyMessage = message;
+            if (errorCode === 'CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') {
+                // hide implementation details
+                prettyMessage = somethingWentWrongMessage;
             }
+            ui.payload += prettyMessage;
+            if (fieldLabel) {
+                ui.payload += ` [${fieldLabel}]`;
+            }
+            ui.payload += '\n';
         }
-        if (fieldErrors && Array.isArray(fieldErrors)) {
-            for (const outputFieldErrors of Object.values(fieldErrors)) {
-                if (outputFieldErrors && Array.isArray(outputFieldErrors)) {
-                    for (const { message, fieldLabel } of outputFieldErrors) {
-                        formatted.message += message;
-                        if (fieldLabel) {
-                            formatted.message += ` [${fieldLabel}]`;
-                        }
-                        formatted.message += '\n';
+    }
+    if (body?.output?.fieldErrors) {
+        ui.payload = ui.payload ?? '';
+        for (const outputFieldErrors of Object.values(body.output.fieldErrors)) {
+            if (outputFieldErrors && Array.isArray(outputFieldErrors)) {
+                for (const fieldError of outputFieldErrors) {
+                    const { message, errorCode } = fieldError;
+                    let prettyMessage = message;
+                    if (errorCode === 'REQUIRED_FIELD_MISSING' && message.includes(':')) {
+                        prettyMessage = message.substring(0, message.indexOf(':'));
+                    } else if (errorCode === 'CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') {
+                        // hide implementation details
+                        prettyMessage = somethingWentWrongMessage;
                     }
+                    ui.fieldErrors.push({
+                        ...fieldError,
+                        message: prettyMessage
+                    });
                 }
             }
         }
     }
 }
 
-function debouncedFn(fn, delay = 1000) {
+/**
+ * @type {Logger}
+ */
+export const consoleLogger = {
+    log: ({ error, ui }) => {
+        console.error(ui.hostName ?? '', JSON.stringify({ error, ui }, null, 2));
+    }
+};
+
+/**
+ * Merge two error handler options. Returns a new error handler options as an object.
+ *
+ * @param {LightningElement | ErrorHandlerOptions | undefined} opts1
+ * @param {LightningElement | ErrorHandlerOptions | undefined} opts2
+ * @return ErrorHandlerOptions
+ */
+function mergeErrorHandlerOptions(opts1, opts2) {
+    const options1 = opts1 && opts1 instanceof LightningElement ? { element: opts1 } : opts1;
+    const options2 = opts2 && opts2 instanceof LightningElement ? { element: opts2 } : opts2;
+    return Object.assign({}, options1 ?? {}, options2 ?? {});
+}
+
+function debounced(fn, delay = 1000) {
     let timer = null;
     return function () {
         // eslint-disable-next-line no-invalid-this
