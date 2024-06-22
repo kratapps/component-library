@@ -43,6 +43,7 @@ public class LightningResponse {
         if (e instanceof DmlException) {
             DmlException dmlE = (DmlException) e;
             for (Integer i = 0; i < dmlE.getNumDml(); i++) {
+                // Unexpected error, we will hide the implementation details with AuraHandledException.
                 if (dmlE.getDmlType(i) == StatusCode.CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY) {
                     throw new AuraHandledException(e.getMessage());
                 }

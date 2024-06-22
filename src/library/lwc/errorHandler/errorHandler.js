@@ -6,7 +6,7 @@
  */
 
 /**
- * @file    Generic Error Handler.
+ * @file Generic Error Handler.
  *
  * @link    https://docs.kratapps.com/component-library/error-handler
  *
@@ -185,7 +185,7 @@ function showToastEvent({ element, title, payload, debounce }) {
  * @param {string} somethingWentWrongMessage
  * @return {UiError}
  */
-function formatError(e, element, isSomethingWentWrong, somethingWentWrongMessage) {
+export function formatError(e, element, isSomethingWentWrong, somethingWentWrongMessage) {
     const ui = {
         message: somethingWentWrongMessage,
         payload: undefined,

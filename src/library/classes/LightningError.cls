@@ -26,8 +26,8 @@ public class LightningError {
     @AuraEnabled
     public final Map<String, Object> output;
 
-    private List<LightningError.Error> errors = new List<LightningError.Error>();
-    private Map<String, List<LightningError.FieldError>> fieldErrors = new Map<String, List<LightningError.FieldError>>();
+    private transient List<LightningError.Error> errors = new List<LightningError.Error>();
+    private transient Map<String, List<LightningError.FieldError>> fieldErrors = new Map<String, List<LightningError.FieldError>>();
 
     private LightningError() {
         output = new Map<String, Object>{ 'errors' => errors, 'fieldErrors' => fieldErrors };
@@ -55,6 +55,13 @@ public class LightningError {
         return error;
     }
 
+    /**
+     * @description Create a new Lightning Error from System.DmlException.
+     *
+     * @param e the DML exception.
+     *
+     * @return a new Lightning Error.
+     */
     public static LightningError create(DmlException e) {
         LightningError error = new LightningError();
         error.setMessage(e.getMessage());
@@ -98,6 +105,15 @@ public class LightningError {
         return addFieldError(new LightningError.FieldError(message, dfr.getName(), dfr.getLabel(), null));
     }
 
+    /**
+     * @description Add field error to Lightning Error.
+     *
+     * @param field the error SObject field.
+     * @param message the error message.
+     * @param errorCode the error code. Usually a System.StatusCode value.
+     *
+     * @return the current Lightning Error.
+     */
     public LightningError addFieldError(SObjectField field, String message, String errorCode) {
         DescribeFieldResult dfr = field.getDescribe();
         return addFieldError(new LightningError.FieldError(message, dfr.getName(), dfr.getLabel(), errorCode));

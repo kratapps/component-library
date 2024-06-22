@@ -6,7 +6,7 @@
  */
 
 /**
- * @file    Modal for Error Handler.
+ * @file Modal for Error Handler.
  *
  * @link    https://docs.kratapps.com/component-library/error-handler
  *
@@ -29,7 +29,10 @@ export default class ErrorHandlerModal extends LightningModal {
     }
 
     get allFieldErrors() {
-        return this.fieldErrors;
+        return (this.fieldErrors ?? []).map((it) => ({
+            ...it,
+            key: it.fieldName ?? it.field ?? it.fieldLabel
+        }));
     }
 
     handleActionClick(event) {
