@@ -2,7 +2,19 @@
     <div class="slds-modal__header slds-theme_alert-texture slds-theme_error">
         <h1 class="slds-text-heading_medium">{label}</h1>
     </div>
-    <lightning-modal-body>{message}</lightning-modal-body>
+    <lightning-modal-body>
+        <div style="white-space: pre-line; line-height: 1.5">
+            <span class="message"> {message} </span>
+            <template lwc:if={allFieldErrors}>
+                <template for:each={allFieldErrors} for:item="fieldError">
+                    <div style="white-space: pre-line; line-height: 1.5" key={fieldError.key} data-field={fieldError.key}>
+                        <span>{fieldError.message}&nbsp;</span>
+                        <span style="font-weight: bold">[{fieldError.fieldLabel}]</span>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-modal-body>
     <lightning-modal-footer>
         <template for:each={allActions} for:item="action">
             <lightning-button
