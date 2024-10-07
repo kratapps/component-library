@@ -1,14 +1,6 @@
 # Example
 
 ```apex
-// Optional company-level callout
-public virtual class MyCallout extends HttpCallout {
-    // e.g. override error handling
-    protected override void handleCalloutError(HttpResponse resp) {
-        // TODO error logging
-        throw new HttpCalloutException('HTTP callout error');
-    }
-}
 
 // Optional service-level callout
 public virtual class ServiceNowCallout extends MyCallout {
@@ -16,6 +8,11 @@ public virtual class ServiceNowCallout extends MyCallout {
     public ServiceNowCallout() {
         super('callout:serviceNow');
         headers.setAccept(MediaType.APPLICATION_JSON);
+    }
+
+    protected override void handleCalloutError(HttpResponse resp) {
+        // TODO error logging
+        throw new HttpCalloutException('HTTP callout error');
     }
 }
 
