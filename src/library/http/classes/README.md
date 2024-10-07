@@ -28,7 +28,7 @@ public class GetServiceNowIncident extends ServiceNowCallout {
         setQueryString('sysparm_display_value', 'true');
         send(); // or send(string) or sendJson(object);
         preprocessResponse(new ServiceNowIncidentResponsePreprocessor()); // optional
-        return (Incidents) deserialize(Response.class);
+        return (Incidents) deserialize(Incidents.class);
     }
 
     public class Incidents {
