@@ -105,7 +105,7 @@ public virtual inherited sharing class HttpCallout {
     }
 
     @TestVisible
-    protected void handleCalloutError(HttpResponse resp) {
+    protected virtual void handleCalloutError(HttpResponse resp) {
         System.debug('[' + resp.getStatusCode() + '] ' + resp.getStatus() + '\n' + resp.getBody());
         throw new HttpCalloutException('HTTP callout error');
     }
