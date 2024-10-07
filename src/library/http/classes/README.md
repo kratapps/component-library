@@ -20,9 +20,9 @@ public virtual class ServiceNowCallout extends MyCallout {
 }
 
 // Implementation callout
-public class ServiceNowGetIncidentCallout extends ServiceNowCallout {
+public class GetServiceNowIncident extends ServiceNowCallout {
 
-    public Response call(Id recordId) {
+    public Response getIncident(Id recordId) {
         setPath('/now/table/x_pust_customer_solutions');
         setQueryString('sysparm_query', '^variables.06ba51b7db94e01027796a19139619e0=' + recordId);
         setQueryString('sysparm_display_value', 'true');
