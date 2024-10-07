@@ -31,7 +31,7 @@ public class GetServiceNowIncident extends ServiceNowCallout {
         return (Incidents) deserialize(Response.class);
     }
 
-    public class Response {
+    public class Incidents {
         public List<ServiceNowIncident> result;
     }
 
